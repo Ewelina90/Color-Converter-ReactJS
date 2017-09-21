@@ -9793,7 +9793,27 @@ document.addEventListener('DOMContentLoaded', function () {
 
         _createClass(ConvertedColors, [{
             key: 'render',
-            value: function render() {}
+            value: function render() {
+                return _react2.default.createElement(
+                    'div',
+                    null,
+                    _react2.default.createElement(
+                        'h3',
+                        { id: 'rgb' },
+                        'rgb(222,222,222)'
+                    ),
+                    _react2.default.createElement(
+                        'h3',
+                        { id: 'hsl' },
+                        'hsl(222,10%,10%)'
+                    ),
+                    _react2.default.createElement(
+                        'h3',
+                        { id: 'hex' },
+                        '#fefefe'
+                    )
+                );
+            }
         }]);
 
         return ConvertedColors;
@@ -9810,7 +9830,13 @@ document.addEventListener('DOMContentLoaded', function () {
 
         _createClass(ColorBackground, [{
             key: 'render',
-            value: function render() {}
+            value: function render() {
+                return _react2.default.createElement(
+                    'div',
+                    null,
+                    _react2.default.createElement('div', { className: 'selectedColor' })
+                );
+            }
         }]);
 
         return ColorBackground;
@@ -9827,7 +9853,18 @@ document.addEventListener('DOMContentLoaded', function () {
 
         _createClass(ColorInput, [{
             key: 'render',
-            value: function render() {}
+            value: function render() {
+                return _react2.default.createElement(
+                    'div',
+                    null,
+                    _react2.default.createElement('input', { type: 'text', placeholder: 'enter a color' }),
+                    _react2.default.createElement(
+                        'button',
+                        null,
+                        'go'
+                    )
+                );
+            }
         }]);
 
         return ColorInput;
@@ -9844,7 +9881,15 @@ document.addEventListener('DOMContentLoaded', function () {
 
         _createClass(App, [{
             key: 'render',
-            value: function render() {}
+            value: function render() {
+                return _react2.default.createElement(
+                    'div',
+                    null,
+                    _react2.default.createElement(ColorInput, null),
+                    _react2.default.createElement(ColorBackground, null),
+                    _react2.default.createElement(ConvertedColors, null)
+                );
+            }
         }]);
 
         return App;

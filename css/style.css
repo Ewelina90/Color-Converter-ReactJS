@@ -1,6 +1,7 @@
 * {
     box-sizing: border-box;
     font-family: 'Lato', sans-serif;
+    color: #999;
 }
 
 html {
@@ -22,4 +23,11 @@ body {
     width:60vw;
     margin:0 auto;
     background: #303030;
+}
+
+.selectedColor {
+    width: 80%;
+    height: 50px;
+    margin: 10px auto;
+    border: 1px solid #535353;
 }
