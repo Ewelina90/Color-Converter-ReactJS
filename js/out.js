@@ -9834,7 +9834,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 return _react2.default.createElement(
                     'div',
                     null,
-                    _react2.default.createElement('div', { className: 'selectedColor' })
+                    _react2.default.createElement('div', { className: 'selectedColor', style: { background: this.props.color } })
                 );
             }
         }]);
@@ -9845,10 +9845,27 @@ document.addEventListener('DOMContentLoaded', function () {
     var ColorInput = function (_React$Component3) {
         _inherits(ColorInput, _React$Component3);
 
-        function ColorInput() {
+        function ColorInput(props) {
             _classCallCheck(this, ColorInput);
 
-            return _possibleConstructorReturn(this, (ColorInput.__proto__ || Object.getPrototypeOf(ColorInput)).apply(this, arguments));
+            var _this3 = _possibleConstructorReturn(this, (ColorInput.__proto__ || Object.getPrototypeOf(ColorInput)).call(this, props));
+
+            _this3.handleInputOnChange = function (event) {
+                _this3.setState({
+                    inputValue: event.target.value
+                });
+            };
+
+            _this3.handleButtonOnClick = function (event) {
+                if (typeof _this3.props.getColor === 'function') {
+                    _this3.props.getColor(_this3.state.inputValue);
+                }
+            };
+
+            _this3.state = {
+                inputValue: ""
+            };
+            return _this3;
         }
 
         _createClass(ColorInput, [{
@@ -9857,10 +9874,13 @@ document.addEventListener('DOMContentLoaded', function () {
                 return _react2.default.createElement(
                     'div',
                     null,
-                    _react2.default.createElement('input', { type: 'text', placeholder: 'enter a color' }),
+                    _react2.default.createElement('input', { type: 'text', placeholder: 'enter a color',
+                        value: this.state.inputValue,
+                        onChange: this.handleInputOnChange }),
                     _react2.default.createElement(
                         'button',
-                        null,
+                        {
+                            onClick: this.handleButtonOnClick },
                         'go'
                     )
                 );
@@ -9873,10 +9893,21 @@ document.addEventListener('DOMContentLoaded', function () {
     var App = function (_React$Component4) {
         _inherits(App, _React$Component4);
 
-        function App() {
+        function App(props) {
             _classCallCheck(this, App);
 
-            return _possibleConstructorReturn(this, (App.__proto__ || Object.getPrototypeOf(App)).apply(this, arguments));
+            var _this4 = _possibleConstructorReturn(this, (App.__proto__ || Object.getPrototypeOf(App)).call(this, props));
+
+            _this4.handleButtonClick = function (color) {
+                _this4.setState({
+                    activeColor: color
+                });
+            };
+
+            _this4.state = {
+                activeColor: 'white'
+            };
+            return _this4;
         }
 
         _createClass(App, [{
@@ -9885,8 +9916,8 @@ document.addEventListener('DOMContentLoaded', function () {
                 return _react2.default.createElement(
                     'div',
                     null,
-                    _react2.default.createElement(ColorInput, null),
-                    _react2.default.createElement(ColorBackground, null),
+                    _react2.default.createElement(ColorInput, { getColor: this.handleButtonClick }),
+                    _react2.default.createElement(ColorBackground, { color: this.state.activeColor }),
                     _react2.default.createElement(ConvertedColors, null)
                 );
             }
