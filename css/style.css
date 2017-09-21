@@ -1,1 +1,25 @@
+* {
+    box-sizing: border-box;
+    font-family: 'Lato', sans-serif;
+}
 
+html {
+    font-size: 18px;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    background: #1f2322;
+}
+@media(max-width: 780px){
+    #app {
+        width:100vw;
+    }
+}
+
+#app {
+    width:60vw;
+    margin:0 auto;
+    background: #303030;
+}
