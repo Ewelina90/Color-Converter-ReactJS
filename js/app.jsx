@@ -7,10 +7,10 @@ document.addEventListener('DOMContentLoaded',function(){
 
         render() {
             return (
-                <div>
-                    <h3 id="rgb">rgb(222,222,222)</h3>
-                    <h3 id="hsl">hsl(222,10%,10%)</h3>
-                    <h3 id="hex">#fefefe</h3>
+                <div className="convertedColor">
+                    <h3 id="rgb">{this.props.color}</h3>
+                    <h3 id="hsl">{this.props.color}</h3>
+                    <h3 id="hex">{this.props.color}</h3>
                 </div>
             )
         }
@@ -52,7 +52,7 @@ document.addEventListener('DOMContentLoaded',function(){
 
         render() {
             return (
-                <div>
+                <div className="inputColor">
                     <input type='text' placeholder="enter a color"
                         value={this.state.inputValue}
                         onChange={this.handleInputOnChange}/>
@@ -83,7 +83,7 @@ document.addEventListener('DOMContentLoaded',function(){
                 <div>
                     <ColorInput getColor={this.handleButtonClick}/>
                     <ColorBackground color={this.state.activeColor}/>
-                    <ConvertedColors/>
+                    <ConvertedColors color={this.state.activeColor}/>
                 </div>
             )
         }

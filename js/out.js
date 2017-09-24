@@ -9796,21 +9796,21 @@ document.addEventListener('DOMContentLoaded', function () {
             value: function render() {
                 return _react2.default.createElement(
                     'div',
-                    null,
+                    { className: 'convertedColor' },
                     _react2.default.createElement(
                         'h3',
                         { id: 'rgb' },
-                        'rgb(222,222,222)'
+                        this.props.color
                     ),
                     _react2.default.createElement(
                         'h3',
                         { id: 'hsl' },
-                        'hsl(222,10%,10%)'
+                        this.props.color
                     ),
                     _react2.default.createElement(
                         'h3',
                         { id: 'hex' },
-                        '#fefefe'
+                        this.props.color
                     )
                 );
             }
@@ -9873,7 +9873,7 @@ document.addEventListener('DOMContentLoaded', function () {
             value: function render() {
                 return _react2.default.createElement(
                     'div',
-                    null,
+                    { className: 'inputColor' },
                     _react2.default.createElement('input', { type: 'text', placeholder: 'enter a color',
                         value: this.state.inputValue,
                         onChange: this.handleInputOnChange }),
@@ -9918,7 +9918,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     null,
                     _react2.default.createElement(ColorInput, { getColor: this.handleButtonClick }),
                     _react2.default.createElement(ColorBackground, { color: this.state.activeColor }),
-                    _react2.default.createElement(ConvertedColors, null)
+                    _react2.default.createElement(ConvertedColors, { color: this.state.activeColor })
                 );
             }
         }]);
