@@ -9785,10 +9785,16 @@ document.addEventListener('DOMContentLoaded', function () {
     var ConvertedColors = function (_React$Component) {
         _inherits(ConvertedColors, _React$Component);
 
-        function ConvertedColors() {
+        function ConvertedColors(props) {
             _classCallCheck(this, ConvertedColors);
 
-            return _possibleConstructorReturn(this, (ConvertedColors.__proto__ || Object.getPrototypeOf(ConvertedColors)).apply(this, arguments));
+            var _this = _possibleConstructorReturn(this, (ConvertedColors.__proto__ || Object.getPrototypeOf(ConvertedColors)).call(this, props));
+
+            _this.state = {
+                colorFormat: _this.props.colorFormat,
+                color: _this.props.color
+            };
+            return _this;
         }
 
         _createClass(ConvertedColors, [{
@@ -9805,7 +9811,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     _react2.default.createElement(
                         'h3',
                         { id: 'hsl' },
-                        this.props.color
+                        this.props.colorFormat
                     ),
                     _react2.default.createElement(
                         'h3',
@@ -9854,16 +9860,31 @@ document.addEventListener('DOMContentLoaded', function () {
                 _this3.setState({
                     inputValue: event.target.value
                 });
+                _this3.validateColor(event.target.value);
             };
 
             _this3.handleButtonOnClick = function (event) {
-                if (typeof _this3.props.getColor === 'function') {
-                    _this3.props.getColor(_this3.state.inputValue);
+                if (typeof _this3.props.getColor === 'function' && _this3.state.validateColor) {
+                    _this3.props.getColor(_this3.state.inputValue, _this3.state.validateColor);
+                }
+            };
+
+            _this3.validateColor = function (color) {
+                var hex = /^\#([a-fA-F0-9]{2})([a-fA-F0-9]{2})([a-fA-F0-9]{2})$/;
+                if (color.match(hex)) {
+                    _this3.setState({
+                        validateColor: 'hex'
+                    });
+                } else {
+                    _this3.setState({
+                        validateColor: false
+                    });
                 }
             };
 
             _this3.state = {
-                inputValue: ""
+                inputValue: "",
+                validateColor: false
             };
             return _this3;
         }
@@ -9871,6 +9892,7 @@ document.addEventListener('DOMContentLoaded', function () {
         _createClass(ColorInput, [{
             key: 'render',
             value: function render() {
+
                 return _react2.default.createElement(
                     'div',
                     { className: 'inputColor' },
@@ -9898,14 +9920,16 @@ document.addEventListener('DOMContentLoaded', function () {
 
             var _this4 = _possibleConstructorReturn(this, (App.__proto__ || Object.getPrototypeOf(App)).call(this, props));
 
-            _this4.handleButtonClick = function (color) {
+            _this4.handleButtonClick = function (color, format) {
                 _this4.setState({
-                    activeColor: color
+                    activeColor: color,
+                    colorFormat: format
                 });
             };
 
             _this4.state = {
-                activeColor: 'white'
+                activeColor: 'white',
+                colorFormat: ''
             };
             return _this4;
         }
@@ -9918,7 +9942,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     null,
                     _react2.default.createElement(ColorInput, { getColor: this.handleButtonClick }),
                     _react2.default.createElement(ColorBackground, { color: this.state.activeColor }),
-                    _react2.default.createElement(ConvertedColors, { color: this.state.activeColor })
+                    _react2.default.createElement(ConvertedColors, { color: this.state.activeColor, colorFormat: this.state.colorFormat })
                 );
             }
         }]);
