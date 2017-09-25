@@ -9865,25 +9865,46 @@ document.addEventListener('DOMContentLoaded', function () {
 
             _this3.handleButtonOnClick = function (event) {
                 if (typeof _this3.props.getColor === 'function' && _this3.state.validateColor) {
-                    _this3.props.getColor(_this3.state.inputValue, _this3.state.validateColor);
+                    _this3.props.getColor(_this3.state.activeColor, _this3.state.validateColor);
                 }
             };
 
             _this3.validateColor = function (color) {
-                var hex = /^\#([a-fA-F0-9]{2})([a-fA-F0-9]{2})([a-fA-F0-9]{2})$/;
-                if (color.match(hex)) {
+                var hex = /^\#?([a-fA-F0-9]{2})([a-fA-F0-9]{2})([a-fA-F0-9]{2})$/;
+                var shortHex = /^\#?([a-fA-F0-9])([a-fA-F0-9])([a-fA-F0-9])$/;
+                var hsl = /^hsl\(([0-360]{1,3})\,(\d{1,3})\%\,(\d{1,3})\%\)$/;
+                var rgb = /^rgb\((\d{1,3})\,(\d{1,3})\,(\d{1,3})\)$/;
+
+                if (color.match(hex) || color.match(shortHex)) {
+                    var fixColor = color;
+                    if (color.charAt(0) !== '#') {
+                        fixColor = '#' + color;
+                    }
                     _this3.setState({
+                        activeColor: fixColor,
                         validateColor: 'hex'
+                    });
+                } else if (color.match(hsl)) {
+                    console.log('hsl' + color.match(hsl));
+                    _this3.setState({
+                        validateColor: 'hsl'
+                    });
+                } else if (color.match(rgb)) {
+                    _this3.setState({
+                        validateColor: 'rgb'
                     });
                 } else {
                     _this3.setState({
                         validateColor: false
                     });
+                    console.log('Invalid color format');
+                    console.log('hsl' + color.match(hsl));
                 }
             };
 
             _this3.state = {
                 inputValue: "",
+                activeColor: "",
                 validateColor: false
             };
             return _this3;
