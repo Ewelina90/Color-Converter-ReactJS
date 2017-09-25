@@ -64,7 +64,8 @@ document.addEventListener('DOMContentLoaded',function(){
         validateColor = (color) => {
             const hex = /^\#?([a-fA-F0-9]{2})([a-fA-F0-9]{2})([a-fA-F0-9]{2})$/;
             const shortHex = /^\#?([a-fA-F0-9])([a-fA-F0-9])([a-fA-F0-9])$/;
-            const hsl = /^hsl\(([0-360]{1,3})\,(\d{1,3})\%\,(\d{1,3})\%\)$/;
+            const hsl = /^(hsl)?\(?([0-360]{1,3})\,(\d{1,3})\%\,(\d{1,3})\%\)?$/;
+            const hsl2 = /^(hsl)?\(?([0-360]{1,3})\,([0]\.\d{1,2})\,([0]\.\d{1,2})\)?$/;
             const rgb = /^rgb\((\d{1,3})\,(\d{1,3})\,(\d{1,3})\)$/
 
             if(color.match(hex) || color.match(shortHex)){
@@ -76,21 +77,28 @@ document.addEventListener('DOMContentLoaded',function(){
                     activeColor : fixColor,
                     validateColor :  'hex',
                 })
-            }else if(color.match(hsl)){
-                console.log('hsl'+ color.match(hsl));
+            }
+            else if(color.match(hsl2)){
+                console.log('hsl'+ color.match(hsl2));
+                let fixColor = color;
                 this.setState({
+                    activeColor : fixColor,
                     validateColor : 'hsl',
                 })
-            }else if(color.match(rgb)){
+            }
+            else if(color.match(rgb)){
                 this.setState({
+                    activeColor : color,
                     validateColor : 'rgb',
                 })
-            }else {
+            }
+            else {
                 this.setState({
+                    activeColor : color,
                     validateColor : false,
                 })
                 console.log('Invalid color format');
-                console.log('hsl'+ color.match(hsl));
+                console.log('hsl'+ color.match(hsl2));
             }
         }
 
