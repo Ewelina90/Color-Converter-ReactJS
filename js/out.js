@@ -9773,9 +9773,11 @@ var _reactDom = __webpack_require__(81);
 
 var _reactDom2 = _interopRequireDefault(_reactDom);
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+var _colorinput = __webpack_require__(184);
 
-function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
+var _colorinput2 = _interopRequireDefault(_colorinput);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -9802,6 +9804,7 @@ document.addEventListener('DOMContentLoaded', function () {
         _createClass(ConvertedColors, [{
             key: 'render',
             value: function render() {
+
                 return _react2.default.createElement(
                     'div',
                     { className: 'convertedColor' },
@@ -9854,129 +9857,26 @@ document.addEventListener('DOMContentLoaded', function () {
         return ColorBackground;
     }(_react2.default.Component);
 
-    var ColorInput = function (_React$Component3) {
-        _inherits(ColorInput, _React$Component3);
-
-        function ColorInput(props) {
-            _classCallCheck(this, ColorInput);
-
-            var _this3 = _possibleConstructorReturn(this, (ColorInput.__proto__ || Object.getPrototypeOf(ColorInput)).call(this, props));
-
-            _this3.handleInputOnChange = function (event) {
-                _this3.setState({
-                    inputValue: event.target.value
-                });
-                _this3.validateColor(event.target.value);
-            };
-
-            _this3.handleButtonOnClick = function (event) {
-                if (typeof _this3.props.getColor === 'function' && _this3.state.validateColor) {
-                    _this3.props.getColor(_this3.state.activeColor, _this3.state.validateColor);
-                    console.log(_this3.state.validateColor);
-                }
-            };
-
-            _this3.validateColor = function (color) {
-                var hex = /^\#([a-fA-F0-9]{2})([a-fA-F0-9]{2})([a-fA-F0-9]{2})$/;
-                var shortHex = /^\#([a-fA-F0-9]{3})$/;
-                var hsl = /^hsl\((\d{1,3})\,(\d{1,3})\%\,(\d{1,3})\%\)$/;
-                var rgb = /^rgb\((\d{1,3})\,(\d{1,3})\,(\d{1,3})\)$/;
-
-                if (color.match(hex) || color.match(shortHex)) {
-                    var fixColor = color;
-                    console.log(color.match(shortHex));
-                    if (color.length === 4) {
-                        fixColor = [].concat(_toConsumableArray(color)).map(function (el, i) {
-                            return i === 0 ? '' + el : '' + el + el;
-                        });
-                    }
-                    _this3.setState({
-                        activeColor: fixColor,
-                        validateColor: 'hex'
-                    });
-                } else if (color.match(hsl)) {
-                    var matchHsl = color.match(hsl);
-                    if (matchHsl[1] <= 360 && matchHsl[2] <= 100 && matchHsl[3] <= 100) {
-                        _this3.setState({
-                            activeColor: color,
-                            validateColor: 'hsl'
-                        });
-                    } else {
-                        _this3.setState({
-                            validateColor: false
-                        });
-                    }
-                } else if (color.match(rgb)) {
-                    var matchRgb = color.match(rgb);
-                    if (matchRgb[1] <= 255 && matchRgb[2] <= 255 && matchRgb[3] <= 255) {
-                        _this3.setState({
-                            activeColor: color,
-                            validateColor: 'rgb'
-                        });
-                    } else {
-                        _this3.setState({
-                            validateColor: false
-                        });
-                    }
-                } else {
-                    _this3.setState({
-                        activeColor: color,
-                        validateColor: false
-                    });
-                }
-            };
-
-            _this3.state = {
-                inputValue: "",
-                activeColor: "",
-                validateColor: false
-            };
-            return _this3;
-        }
-
-        _createClass(ColorInput, [{
-            key: 'render',
-            value: function render() {
-
-                return _react2.default.createElement(
-                    'div',
-                    { className: 'inputColor' },
-                    _react2.default.createElement('input', { type: 'text', placeholder: 'enter a color',
-                        value: this.state.inputValue,
-                        onChange: this.handleInputOnChange }),
-                    _react2.default.createElement(
-                        'button',
-                        {
-                            onClick: this.handleButtonOnClick },
-                        'go'
-                    )
-                );
-            }
-        }]);
-
-        return ColorInput;
-    }(_react2.default.Component);
-
-    var App = function (_React$Component4) {
-        _inherits(App, _React$Component4);
+    var App = function (_React$Component3) {
+        _inherits(App, _React$Component3);
 
         function App(props) {
             _classCallCheck(this, App);
 
-            var _this4 = _possibleConstructorReturn(this, (App.__proto__ || Object.getPrototypeOf(App)).call(this, props));
+            var _this3 = _possibleConstructorReturn(this, (App.__proto__ || Object.getPrototypeOf(App)).call(this, props));
 
-            _this4.handleButtonClick = function (color, format) {
-                _this4.setState({
+            _this3.handleButtonClick = function (color, format) {
+                _this3.setState({
                     activeColor: color,
                     colorFormat: format
                 });
             };
 
-            _this4.state = {
+            _this3.state = {
                 activeColor: 'white',
                 colorFormat: ''
             };
-            return _this4;
+            return _this3;
         }
 
         _createClass(App, [{
@@ -9985,7 +9885,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 return _react2.default.createElement(
                     'div',
                     null,
-                    _react2.default.createElement(ColorInput, { getColor: this.handleButtonClick }),
+                    _react2.default.createElement(_colorinput2.default, { getColor: this.handleButtonClick }),
                     _react2.default.createElement(ColorBackground, { color: this.state.activeColor }),
                     _react2.default.createElement(ConvertedColors, { color: this.state.activeColor, colorFormat: this.state.colorFormat })
                 );
@@ -22613,6 +22513,141 @@ function traverseAllChildren(children, callback, traverseContext) {
 
 module.exports = traverseAllChildren;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
+
+/***/ }),
+/* 184 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _react = __webpack_require__(82);
+
+var _react2 = _interopRequireDefault(_react);
+
+var _reactDom = __webpack_require__(81);
+
+var _reactDom2 = _interopRequireDefault(_reactDom);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var ColorInput = function (_React$Component) {
+    _inherits(ColorInput, _React$Component);
+
+    function ColorInput(props) {
+        _classCallCheck(this, ColorInput);
+
+        var _this = _possibleConstructorReturn(this, (ColorInput.__proto__ || Object.getPrototypeOf(ColorInput)).call(this, props));
+
+        _this.handleInputOnChange = function (event) {
+            _this.setState({
+                inputValue: event.target.value
+            });
+            _this.validateColor(event.target.value);
+        };
+
+        _this.handleButtonOnClick = function (event) {
+            if (typeof _this.props.getColor === 'function' && _this.state.validateColor) {
+                _this.props.getColor(_this.state.activeColor, _this.state.validateColor);
+            }
+        };
+
+        _this.validateColor = function (color) {
+            var hex = /^\#([a-fA-F0-9]{2})([a-fA-F0-9]{2})([a-fA-F0-9]{2})$/;
+            var shortHex = /^\#([a-fA-F0-9]{3})$/;
+            var hsl = /^hsl\((\d{1,3})\,(\d{1,3})\%\,(\d{1,3})\%\)$/;
+            var rgb = /^rgb\((\d{1,3})\,(\d{1,3})\,(\d{1,3})\)$/;
+
+            if (color.match(hex) || color.match(shortHex)) {
+                var fixColor = color;
+
+                if (color.length === 4) {
+                    fixColor = [].concat(_toConsumableArray(color)).map(function (el, i) {
+                        return i === 0 ? '' + el : '' + el + el;
+                    });
+                }
+                _this.setState({
+                    activeColor: fixColor,
+                    validateColor: 'hex'
+                });
+            } else if (color.match(hsl)) {
+                var matchHsl = color.match(hsl);
+                if (matchHsl[1] <= 360 && matchHsl[2] <= 100 && matchHsl[3] <= 100) {
+                    _this.setState({
+                        activeColor: color,
+                        validateColor: 'hsl'
+                    });
+                } else {
+                    _this.setState({
+                        validateColor: false
+                    });
+                }
+            } else if (color.match(rgb)) {
+                var matchRgb = color.match(rgb);
+                if (matchRgb[1] <= 255 && matchRgb[2] <= 255 && matchRgb[3] <= 255) {
+                    _this.setState({
+                        activeColor: color,
+                        validateColor: 'rgb'
+                    });
+                } else {
+                    _this.setState({
+                        validateColor: false
+                    });
+                }
+            } else {
+                _this.setState({
+                    activeColor: color,
+                    validateColor: false
+                });
+            }
+        };
+
+        _this.state = {
+            inputValue: "",
+            activeColor: "",
+            validateColor: false
+        };
+        return _this;
+    }
+
+    _createClass(ColorInput, [{
+        key: 'render',
+        value: function render() {
+
+            return _react2.default.createElement(
+                'div',
+                { className: 'inputColor' },
+                _react2.default.createElement('input', { type: 'text', placeholder: 'enter a color',
+                    value: this.state.inputValue,
+                    onChange: this.handleInputOnChange }),
+                _react2.default.createElement(
+                    'button',
+                    {
+                        onClick: this.handleButtonOnClick },
+                    'go'
+                )
+            );
+        }
+    }]);
+
+    return ColorInput;
+}(_react2.default.Component);
+
+exports.default = ColorInput;
 
 /***/ })
 /******/ ]);
