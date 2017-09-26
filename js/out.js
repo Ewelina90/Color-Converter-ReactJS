@@ -9840,7 +9840,11 @@ document.addEventListener('DOMContentLoaded', function () {
                 return _react2.default.createElement(
                     'div',
                     null,
-                    _react2.default.createElement('div', { className: 'selectedColor', style: { background: this.props.color } })
+                    _react2.default.createElement(
+                        'div',
+                        { className: 'selectedColor', style: { background: this.props.color } },
+                        this.props.color
+                    )
                 );
             }
         }]);
@@ -9866,14 +9870,15 @@ document.addEventListener('DOMContentLoaded', function () {
             _this3.handleButtonOnClick = function (event) {
                 if (typeof _this3.props.getColor === 'function' && _this3.state.validateColor) {
                     _this3.props.getColor(_this3.state.activeColor, _this3.state.validateColor);
+                    console.log(_this3.state.validateColor);
                 }
             };
 
             _this3.validateColor = function (color) {
                 var hex = /^\#?([a-fA-F0-9]{2})([a-fA-F0-9]{2})([a-fA-F0-9]{2})$/;
                 var shortHex = /^\#?([a-fA-F0-9])([a-fA-F0-9])([a-fA-F0-9])$/;
-                var hsl = /^(hsl)?\(?([0-360]{1,3})\,(\d{1,3})\%\,(\d{1,3})\%\)?$/;
-                var hsl2 = /^(hsl)?\(?([0-360]{1,3})\,([0]\.\d{1,2})\,([0]\.\d{1,2})\)?$/;
+                var hsl = /^hsl\((\d{1,3})\,(\d{1,3})\%\,(\d{1,3})\%\)$/;
+                // const hsl2 = /^(hsl)?\(?([0-360]{1,3})\,([0]\.\d{1,2})\,([0]\.\d{1,2})\)?$/;
                 var rgb = /^rgb\((\d{1,3})\,(\d{1,3})\,(\d{1,3})\)$/;
 
                 if (color.match(hex) || color.match(shortHex)) {
@@ -9885,13 +9890,19 @@ document.addEventListener('DOMContentLoaded', function () {
                         activeColor: fixColor,
                         validateColor: 'hex'
                     });
-                } else if (color.match(hsl2)) {
-                    console.log('hsl' + color.match(hsl2));
-                    var _fixColor = color;
-                    _this3.setState({
-                        activeColor: _fixColor,
-                        validateColor: 'hsl'
-                    });
+                } else if (color.match(hsl)) {
+                    var matchResult = color.match(hsl);
+
+                    if (matchResult[1] <= 360 && matchResult[2] <= 100 && matchResult[3] <= 100) {
+                        _this3.setState({
+                            activeColor: color,
+                            validateColor: 'hsl'
+                        });
+                    } else {
+                        _this3.setState({
+                            validateColor: false
+                        });
+                    }
                 } else if (color.match(rgb)) {
                     _this3.setState({
                         activeColor: color,
@@ -9902,8 +9913,6 @@ document.addEventListener('DOMContentLoaded', function () {
                         activeColor: color,
                         validateColor: false
                     });
-                    console.log('Invalid color format');
-                    console.log('hsl' + color.match(hsl2));
                 }
             };
 
