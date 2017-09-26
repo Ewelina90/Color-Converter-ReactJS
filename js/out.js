@@ -9775,6 +9775,8 @@ var _reactDom2 = _interopRequireDefault(_reactDom);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
+
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
@@ -9875,25 +9877,26 @@ document.addEventListener('DOMContentLoaded', function () {
             };
 
             _this3.validateColor = function (color) {
-                var hex = /^\#?([a-fA-F0-9]{2})([a-fA-F0-9]{2})([a-fA-F0-9]{2})$/;
-                var shortHex = /^\#?([a-fA-F0-9])([a-fA-F0-9])([a-fA-F0-9])$/;
+                var hex = /^\#([a-fA-F0-9]{2})([a-fA-F0-9]{2})([a-fA-F0-9]{2})$/;
+                var shortHex = /^\#([a-fA-F0-9]{3})$/;
                 var hsl = /^hsl\((\d{1,3})\,(\d{1,3})\%\,(\d{1,3})\%\)$/;
-                // const hsl2 = /^(hsl)?\(?([0-360]{1,3})\,([0]\.\d{1,2})\,([0]\.\d{1,2})\)?$/;
                 var rgb = /^rgb\((\d{1,3})\,(\d{1,3})\,(\d{1,3})\)$/;
 
                 if (color.match(hex) || color.match(shortHex)) {
                     var fixColor = color;
-                    if (color.charAt(0) !== '#') {
-                        fixColor = '#' + color;
+                    console.log(color.match(shortHex));
+                    if (color.length === 4) {
+                        fixColor = [].concat(_toConsumableArray(color)).map(function (el, i) {
+                            return i === 0 ? '' + el : '' + el + el;
+                        });
                     }
                     _this3.setState({
                         activeColor: fixColor,
                         validateColor: 'hex'
                     });
                 } else if (color.match(hsl)) {
-                    var matchResult = color.match(hsl);
-
-                    if (matchResult[1] <= 360 && matchResult[2] <= 100 && matchResult[3] <= 100) {
+                    var matchHsl = color.match(hsl);
+                    if (matchHsl[1] <= 360 && matchHsl[2] <= 100 && matchHsl[3] <= 100) {
                         _this3.setState({
                             activeColor: color,
                             validateColor: 'hsl'
@@ -9904,10 +9907,17 @@ document.addEventListener('DOMContentLoaded', function () {
                         });
                     }
                 } else if (color.match(rgb)) {
-                    _this3.setState({
-                        activeColor: color,
-                        validateColor: 'rgb'
-                    });
+                    var matchRgb = color.match(rgb);
+                    if (matchRgb[1] <= 255 && matchRgb[2] <= 255 && matchRgb[3] <= 255) {
+                        _this3.setState({
+                            activeColor: color,
+                            validateColor: 'rgb'
+                        });
+                    } else {
+                        _this3.setState({
+                            validateColor: false
+                        });
+                    }
                 } else {
                     _this3.setState({
                         activeColor: color,

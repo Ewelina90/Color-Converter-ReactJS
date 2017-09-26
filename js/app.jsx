@@ -63,16 +63,18 @@ document.addEventListener('DOMContentLoaded',function(){
         };
 
         validateColor = (color) => {
-            const hex = /^\#?([a-fA-F0-9]{2})([a-fA-F0-9]{2})([a-fA-F0-9]{2})$/;
-            const shortHex = /^\#?([a-fA-F0-9])([a-fA-F0-9])([a-fA-F0-9])$/;
+            const hex = /^\#([a-fA-F0-9]{2})([a-fA-F0-9]{2})([a-fA-F0-9]{2})$/;
+            const shortHex = /^\#([a-fA-F0-9]{3})$/;
             const hsl = /^hsl\((\d{1,3})\,(\d{1,3})\%\,(\d{1,3})\%\)$/;
-            // const hsl2 = /^(hsl)?\(?([0-360]{1,3})\,([0]\.\d{1,2})\,([0]\.\d{1,2})\)?$/;
             const rgb = /^rgb\((\d{1,3})\,(\d{1,3})\,(\d{1,3})\)$/
 
             if(color.match(hex) || color.match(shortHex)){
                 let fixColor = color;
-                if(color.charAt(0) !== '#'){
-                        fixColor = `#${color}`;
+                console.log(color.match(shortHex));
+                if(color.length === 4){
+                        fixColor = [...color].map(function(el,i){
+                            return i === 0 ? `${el}` : `${el}${el}`;
+                        });
                 }
                 this.setState({
                     activeColor : fixColor,
@@ -80,9 +82,8 @@ document.addEventListener('DOMContentLoaded',function(){
                 })
             }
             else if(color.match(hsl)){
-                const matchResult = color.match(hsl);
-
-                if((matchResult[1] <= 360) && (matchResult[2] <= 100) && (matchResult[3] <= 100)){
+                const matchHsl = color.match(hsl);
+                if((matchHsl[1] <= 360) && (matchHsl[2] <= 100) && (matchHsl[3] <= 100)){
                     this.setState({
                         activeColor : color,
                         validateColor : 'hsl',
@@ -95,10 +96,18 @@ document.addEventListener('DOMContentLoaded',function(){
                 }
             }
             else if(color.match(rgb)){
-                this.setState({
-                    activeColor : color,
-                    validateColor : 'rgb',
-                })
+                const matchRgb = color.match(rgb);
+                if((matchRgb[1] <= 255) && (matchRgb[2] <= 255) && (matchRgb[3] <= 255)){
+                    this.setState({
+                        activeColor : color,
+                        validateColor : 'rgb',
+                    });
+                }
+                else {
+                    this.setState({
+                        validateColor : false,
+                    });
+                }
             }
             else {
                 this.setState({
