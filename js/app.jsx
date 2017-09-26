@@ -6,18 +6,26 @@ document.addEventListener('DOMContentLoaded',function(){
 
     class ConvertedColors extends React.Component {
 
-        constructor(props) {
-            super(props);
-            this.state = {
-                colorFormat : this.props.colorFormat,
-                color : this.props.color
-            };
-        }
-        
-        render() {
+        // constructor(props) {
+        //     super(props);
+        //     this.state = {
+        //         colorFormat : this.props.colorFormat,
+        //         color : this.props.color
+        //     };
+        // }
 
+        hexToRgb = (color) => {
+            return color.toString().replace(/^#?([a-f\d])([a-f\d])([a-f\d])$/i
+             ,(m, r, g, b) => '#' + r + r + g + g + b + b)
+             .substring(1).match(/.{2}/g)
+             .map(x => parseInt(x, 16));
+        }
+
+        render() {
+            const list = this.hexToRgb(this.props.color);
             return (
                 <div className="convertedColor">
+                    {list}
                     <h3 id="rgb">{this.props.color}</h3>
                     <h3 id="hsl">{this.props.colorFormat}</h3>
                     <h3 id="hex">{this.props.color}</h3>
