@@ -35,12 +35,20 @@ class ColorInput extends React.Component {
             let fixColor = color;
 
             if(color.length === 4){
-                    fixColor = [...color].map(function(el,i){
-                        return i === 0 ? `${el}` : `${el}${el}`;
-                    });
+                    let tempColor = '';
+                    for (let i = 0; i < color.length; i++){
+                        if(i === 0){
+                            tempColor = `${tempColor}${color[i]}`;
+                        }
+                        else {
+                            tempColor = `${tempColor}${color[i]}${color[i]}`
+                        }
+                    }
+                    fixColor = tempColor;
             }
             this.setState({
                 activeColor : fixColor,
+                // .toString().match(/\#([A-Za-z0-9]{6})/g),
                 validateColor :  'hex',
             })
         }

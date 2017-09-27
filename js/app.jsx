@@ -15,10 +15,8 @@ document.addEventListener('DOMContentLoaded',function(){
         // }
 
         hexToRgb = (color) => {
-            return color.toString().replace(/^#?([a-f\d])([a-f\d])([a-f\d])$/i
-             ,(m, r, g, b) => '#' + r + r + g + g + b + b)
-             .substring(1).match(/.{2}/g)
-             .map(x => parseInt(x, 16));
+            let hex = color.match(/[A-Za-z0-9]{2}/g).map(v => parseInt(v, 16));
+            return `rgb(${hex[0]},${hex[1]},${hex[2]})`;
         }
 
         render() {
