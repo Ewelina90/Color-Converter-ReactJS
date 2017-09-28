@@ -9952,6 +9952,44 @@ document.addEventListener('DOMContentLoaded', function () {
                     return hex.length === 1 ? "0" + hex : hex;
                 };
                 return "#" + c(rgb[1]) + c(rgb[2]) + c(rgb[3]);
+            }, _this.rgbToHsl = function (color) {
+                var rgb = color.match(/^rgb\((\d{1,3})\,(\d{1,3})\,(\d{1,3})\)$/i);
+                var r = (parseInt(rgb[1]) / 255).toFixed(2);
+                var g = (parseInt(rgb[2]) / 255).toFixed(2);
+                var b = (parseInt(rgb[3]) / 255).toFixed(2);
+                console.log(r, g, b);
+                var max = Math.max(r, g, b);
+                var min = Math.min(r, g, b);
+                console.log(max, min);
+                var L = (max + min) / 2;
+                console.log(L);
+                var S = 0;
+                var H = 0;
+                if (min === max) {
+                    S = 0;
+                    H = 0;
+                } else if (L < 0.5) {
+                    S = (max - min) / (max + min);
+                } else {
+                    S = (max - min) / (2.0 - max - min);
+                }
+                console.log(S);
+
+                switch (true) {
+                    case max == r:
+                        H = (g - b) / (max - min) * 60;
+                        break;
+                    case max == g:
+                        H = (2.0 + (b - r) / (max - min)) * 60;
+                        break;
+                    case max == b:
+                        console.log('blue');
+                        H = (4.0 + (r - g) / (max - min)) * 60;
+                        break;
+                    default:
+                        H = 0;
+                }
+                console.log(H);
             }, _temp), _possibleConstructorReturn(_this, _ret);
         }
 
@@ -9968,10 +10006,12 @@ document.addEventListener('DOMContentLoaded', function () {
             value: function render() {
                 if (this.props.colorFormat === 'rgb') {
                     var hex = this.rgbToHex(this.props.color);
+                    var rgb = this.rgbToHsl('rgb(24,98,118)');
                     return _react2.default.createElement(
                         'div',
                         { className: 'convertedColor' },
                         hex,
+                        rgb,
                         _react2.default.createElement(
                             'h3',
                             { id: 'rgb' },
@@ -9989,11 +10029,11 @@ document.addEventListener('DOMContentLoaded', function () {
                         )
                     );
                 } else {
-                    var rgb = this.hexToRgb(this.props.color);
+                    var _rgb = this.hexToRgb(this.props.color);
                     return _react2.default.createElement(
                         'div',
                         { className: 'convertedColor' },
-                        rgb,
+                        _rgb,
                         _react2.default.createElement(
                             'h3',
                             { id: 'rgb' },
