@@ -28,8 +28,8 @@ class ColorInput extends React.Component {
     validateColor = (color) => {
         const hex = /^\#([a-fA-F0-9]{2})([a-fA-F0-9]{2})([a-fA-F0-9]{2})$/;
         const shortHex = /^\#([a-fA-F0-9]{3})$/;
-        const hsl = /^hsl\((\d{1,3})\,(\d{1,3})\%\,(\d{1,3})\%\)$/;
-        const rgb = /^rgb\((\d{1,3})\,(\d{1,3})\,(\d{1,3})\)$/
+        const hsl = /^hsl\((\d{1,3})\,(\d{1,3})\%\,(\d{1,3})\%\)$/i;
+        const rgb = /^rgb\((\d{1,3})\,(\d{1,3})\,(\d{1,3})\)$/i;
 
         if(color.match(hex) || color.match(shortHex)){
             let fixColor = color;

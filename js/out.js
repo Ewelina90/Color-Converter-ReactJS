@@ -9809,8 +9809,8 @@ var ColorInput = function (_React$Component) {
         _this.validateColor = function (color) {
             var hex = /^\#([a-fA-F0-9]{2})([a-fA-F0-9]{2})([a-fA-F0-9]{2})$/;
             var shortHex = /^\#([a-fA-F0-9]{3})$/;
-            var hsl = /^hsl\((\d{1,3})\,(\d{1,3})\%\,(\d{1,3})\%\)$/;
-            var rgb = /^rgb\((\d{1,3})\,(\d{1,3})\,(\d{1,3})\)$/;
+            var hsl = /^hsl\((\d{1,3})\,(\d{1,3})\%\,(\d{1,3})\%\)$/i;
+            var rgb = /^rgb\((\d{1,3})\,(\d{1,3})\,(\d{1,3})\)$/i;
 
             if (color.match(hex) || color.match(shortHex)) {
                 var fixColor = color;
@@ -9944,7 +9944,14 @@ document.addEventListener('DOMContentLoaded', function () {
                 var hex = color.match(/[A-Za-z0-9]{2}/g).map(function (v) {
                     return parseInt(v, 16);
                 });
-                return 'rgb(' + hex[0] + ',' + hex[1] + ',' + hex[2] + ')';
+                return 'rgb(' + hex[0] + ', ' + hex[1] + ', ' + hex[2] + ')';
+            }, _this.rgbToHex = function (color) {
+                var rgb = color.match(/^rgb\((\d{1,3})\,(\d{1,3})\,(\d{1,3})\)$/i);
+                var c = function c(v) {
+                    var hex = parseInt(v).toString(16);
+                    return hex.length === 1 ? "0" + hex : hex;
+                };
+                return "#" + c(rgb[1]) + c(rgb[2]) + c(rgb[3]);
             }, _temp), _possibleConstructorReturn(_this, _ret);
         }
 
@@ -9959,27 +9966,51 @@ document.addEventListener('DOMContentLoaded', function () {
         _createClass(ConvertedColors, [{
             key: 'render',
             value: function render() {
-                var list = this.hexToRgb(this.props.color);
-                return _react2.default.createElement(
-                    'div',
-                    { className: 'convertedColor' },
-                    list,
-                    _react2.default.createElement(
-                        'h3',
-                        { id: 'rgb' },
-                        this.props.color
-                    ),
-                    _react2.default.createElement(
-                        'h3',
-                        { id: 'hsl' },
-                        this.props.colorFormat
-                    ),
-                    _react2.default.createElement(
-                        'h3',
-                        { id: 'hex' },
-                        this.props.color
-                    )
-                );
+                if (this.props.colorFormat === 'rgb') {
+                    var hex = this.rgbToHex(this.props.color);
+                    return _react2.default.createElement(
+                        'div',
+                        { className: 'convertedColor' },
+                        hex,
+                        _react2.default.createElement(
+                            'h3',
+                            { id: 'rgb' },
+                            this.props.color
+                        ),
+                        _react2.default.createElement(
+                            'h3',
+                            { id: 'hsl' },
+                            this.props.colorFormat
+                        ),
+                        _react2.default.createElement(
+                            'h3',
+                            { id: 'hex' },
+                            this.props.color
+                        )
+                    );
+                } else {
+                    var rgb = this.hexToRgb(this.props.color);
+                    return _react2.default.createElement(
+                        'div',
+                        { className: 'convertedColor' },
+                        rgb,
+                        _react2.default.createElement(
+                            'h3',
+                            { id: 'rgb' },
+                            this.props.color
+                        ),
+                        _react2.default.createElement(
+                            'h3',
+                            { id: 'hsl' },
+                            this.props.colorFormat
+                        ),
+                        _react2.default.createElement(
+                            'h3',
+                            { id: 'hex' },
+                            this.props.color
+                        )
+                    );
+                }
             }
         }]);
 
