@@ -9946,7 +9946,9 @@ document.addEventListener('DOMContentLoaded', function () {
                 });
                 return 'rgb(' + hex[0] + ', ' + hex[1] + ', ' + hex[2] + ')';
             }, _this.rgbToHex = function (color) {
+                console.log('color' + color);
                 var rgb = color.match(/^rgb\((\d{1,3})\,(\d{1,3})\,(\d{1,3})\)$/i);
+                console.log('rgb ' + rgb);
                 var c = function c(v) {
                     var hex = parseInt(v).toString(16);
                     return hex.length === 1 ? "0" + hex : hex;
@@ -9969,48 +9971,121 @@ document.addEventListener('DOMContentLoaded', function () {
                     S = 0;
                     H = 0;
                 } else if (L < 0.5) {
-                    S = (max - min) / (max + min);
-                } else {
-                    S = (max - min) / (2.0 - max - min);
+                    S = Math.round((max - min) / (max + min) * 100);
+                    console.log("s " + S);
+                } else if (L > 0.5) {
+                    S = Math.round((max - min) / (2.0 - max - min) * 100);
                 }
-                console.log(S);
+                console.log("s " + S);
 
                 switch (true) {
                     case max == r:
-                        H = (g - b) / (max - min) * 60;
+                        H = Math.round((g - b) / (max - min) * 60 * 100);
                         break;
                     case max == g:
-                        H = (2.0 + (b - r) / (max - min)) * 60;
+                        H = Math.round((2.0 + (b - r) / (max - min)) * 60 * 100);
                         break;
                     case max == b:
                         console.log('blue');
-                        H = (4.0 + (r - g) / (max - min)) * 60;
+                        H = Math.round((4.0 + (r - g) / (max - min)) * 60 * 100);
                         break;
                     default:
                         H = 0;
                 }
-                console.log(H);
+                console.log("h " + H);
+                // dokończyć zaokrąglanie
+                return 'hsl(' + H + ',' + S + '%,' + Math.round(L / 100) + '%)';
+            }, _this.hslToRgb = function (color) {
+                var hsl = color.match(/^hsl\((\d{1,3})\,(\d{1,3})\%\,(\d{1,3})\%\)$/i);
+                console.log(hsl);
+                var H = parseInt(hsl[1]);
+                var S = parseInt(hsl[2]) / 100;
+                var L = parseInt(hsl[3]) / 100;
+                var R = 0;
+                var G = 0;
+                var B = 0;
+
+                var temp1 = 0;
+                var temp2 = 0;
+
+                console.log(H, S, L);
+                if (S === 0) {
+                    var temp = L * 255;
+                    R = temp;
+                    G = temp;
+                    B = temp;
+                    console.log(R, G, B);
+                } else {
+                    if (L < 0.5) {
+                        temp1 = L * (1.0 + S);
+                    } else if (L >= 0.5) {
+                        temp1 = L + S - L * S;
+                    }
+
+                    temp2 = 2 * L - temp1;
+
+                    H = H / 360;
+
+                    var tempR = H + 0.333;
+                    var tempG = H;
+                    var tempB = H - 0.333;
+
+                    var abs = function abs(value) {
+                        if (value < 0) {
+                            value += 1;
+                        } else if (value > 1) {
+                            value -= 1;
+                        }
+                        return value;
+                    };
+                    tempR = abs(tempR);
+                    tempG = abs(tempG);
+                    tempB = abs(tempB);
+
+                    console.log(tempR, tempG, tempB);
+
+                    // 6
+                    var calculateColor = function calculateColor(tempColor) {
+                        if (6 * tempColor < 1) {
+                            return temp2 + (temp1 - temp2) * tempColor * 6;
+                        } else if (6 * tempColor > 1) {
+                            if (2 * tempColor < 1) {
+                                return temp1;
+                            } else if (2 * tempColor > 1) {
+                                if (3 * tempColor < 2) {
+                                    return temp2 + (temp1 - temp2) * (0.666 - tempColor) * 6;
+                                } else if (3 * tempColor > 2) {
+                                    return temp2;
+                                }
+                            }
+                        }
+                    };
+                    R = Math.round(calculateColor(tempR).toFixed(4) * 255);
+                    console.log(R);
+
+                    G = Math.round(calculateColor(tempG).toFixed(4) * 255);
+                    console.log(G);
+
+                    B = Math.round(calculateColor(tempB).toFixed(4) * 255);
+                    console.log(B);
+
+                    console.log('rgb(' + R + ', ' + G + ', ' + B + ')');
+
+                    return 'rgb(' + R + ',' + G + ',' + B + ')';
+                }
             }, _temp), _possibleConstructorReturn(_this, _ret);
         }
-
-        // constructor(props) {
-        //     super(props);
-        //     this.state = {
-        //         colorFormat : this.props.colorFormat,
-        //         color : this.props.color
-        //     };
-        // }
 
         _createClass(ConvertedColors, [{
             key: 'render',
             value: function render() {
                 if (this.props.colorFormat === 'rgb') {
                     var hex = this.rgbToHex(this.props.color);
-                    var rgb = this.rgbToHsl('rgb(24,98,118)');
+                    var rgb = this.rgbToHsl(this.props.color);
+
                     return _react2.default.createElement(
                         'div',
                         { className: 'convertedColor' },
-                        hex,
                         rgb,
                         _react2.default.createElement(
                             'h3',
@@ -10028,29 +10103,35 @@ document.addEventListener('DOMContentLoaded', function () {
                             this.props.color
                         )
                     );
-                } else {
-                    var _rgb = this.hexToRgb(this.props.color);
-                    return _react2.default.createElement(
-                        'div',
-                        { className: 'convertedColor' },
-                        _rgb,
-                        _react2.default.createElement(
-                            'h3',
-                            { id: 'rgb' },
-                            this.props.color
-                        ),
-                        _react2.default.createElement(
-                            'h3',
-                            { id: 'hsl' },
-                            this.props.colorFormat
-                        ),
-                        _react2.default.createElement(
-                            'h3',
-                            { id: 'hex' },
-                            this.props.color
-                        )
-                    );
                 }
+                // else if(this.props.colorFormat === 'hex'){
+                //     const rgb = this.hexToRgb(this.props.color);
+                //     // const hsl = this.rgbToHsl(rgb);
+                //     return (
+                //         <div className="convertedColor">
+                //             {rgb}
+                //
+                //             <h3 id="rgb">{this.props.color}</h3>
+                //             <h3 id="hsl">{this.props.colorFormat}</h3>
+                //             <h3 id="hex">{this.props.color}</h3>
+                //         </div>
+                //     )
+                // }else if(this.props.colorFormat === 'hsl'){
+                //     const rgb = this.hslToRgb(this.props.color);
+                //     const hex = this.rgbToHex(rgb);
+                //     return (
+                //         <div className="convertedColor">
+                //             {rgb}
+                //             {hex}
+                //             <h3 id="rgb">{this.props.color}</h3>
+                //             <h3 id="hsl">{this.props.colorFormat}</h3>
+                //             <h3 id="hex">{this.props.color}</h3>
+                //         </div>
+                //     )
+                // }
+                else {
+                        return null;
+                    }
             }
         }]);
 
