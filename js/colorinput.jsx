@@ -27,6 +27,16 @@ class ColorInput extends React.Component {
         }
     };
 
+    handleOnKeyPress = (event) => {
+        if(event.key === 'Enter'){
+            if((typeof this.props.getColor === 'function') && (this.state.validateColor)){
+                this.props.getColor(this.state.activeColor, this.state.validateColor);
+            }else{
+                alert("Invalid color format!");
+            }
+        }
+    }
+
     validateColor = (color) => {
         const hex = /^\#([a-fA-F0-9]{2})([a-fA-F0-9]{2})([a-fA-F0-9]{2})$/;
         const shortHex = /^\#([a-fA-F0-9]{3})$/;
@@ -94,7 +104,8 @@ class ColorInput extends React.Component {
             <div className="inputColor">
                 <input className="inputField" type='text' placeholder="Enter a color ex. rgb(255,0,45)"
                     value={this.state.inputValue}
-                    onChange={this.handleInputOnChange}/>
+                    onChange={this.handleInputOnChange}
+                    onKeyPress={this.handleOnKeyPress}/>
                 <button className="convertBtn"
                     onClick={this.handleButtonOnClick}>
                     Convert
