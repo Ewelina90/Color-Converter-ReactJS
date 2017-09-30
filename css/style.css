@@ -5,25 +5,32 @@
 }
 
 html {
-    font-size: 18px;
+    font-size: 16px;
 }
 
 body {
     margin: 0;
     padding: 0;
-    background: #1f2322;
-}
-@media(max-width: 780px){
-    #app {
-        width:100vw;
-    }
+    background-image: url('./../img/black_lozenge.png');
+    background-repeat: repeat;
+
 }
 
 #app {
     width:60vw;
-    margin:0 auto;
-    background: #303030;
-    padding: 30px 0;
+    height: 100vh;
+    margin: 0 auto;
+    background: #1a1a1a;
+    text-align: center;
+    overflow-x: auto;
+    overflow-y: visible;
+}
+
+h1 {
+    line-height: 4em;
+    margin: 0;
+    letter-spacing: 2px;
+    color: #009688;
 }
 
 .inputColor, .convertedColor {
@@ -32,9 +39,64 @@ body {
     text-align: center;
 }
 
+.inputField {
+    display: inline-block;
+    border: none;
+    border-bottom: 1px solid #009688;
+    padding: 7px 30px;
+    min-width: 290px;
+}
+
+input {
+    text-align: center;
+    font-size: 1rem;
+    margin: 30px 10px;
+    background-color: #1a1a1a;
+    cursor: auto;
+}
+
+input:focus {
+    border: 1px solid #009688;
+}
+
+.convertBtn {
+    border: none;
+    display: inline-block;
+    outline: 0;
+    padding: 8px 16px;
+    background-color: #009688;
+    overflow: hidden;
+    text-decoration: none;
+    color: #1f1f1f;
+    font-size: 0.99rem;
+    text-align: center;
+    cursor: pointer;
+    white-space: nowrap;
+}
+
+button:hover {
+    background-color: #ccc;
+    color: #000;
+    transition: 0.2s;
+}
+
 .selectedColor {
-    width: 80%;
-    height: 50px;
+    width: 250px;
+    height: 250px;
     margin: 10px auto;
-    border: 1px solid #535353;
+    border: 1px solid white;
+    border-radius: 50%;
+}
+
+.convertedColor {
+    letter-spacing: 1px;
+    font-size: 1rem;
+    font-weight: 200;
+}
+
+@media(max-width: 780px){
+    #app {
+        width:100%;
+        min-width: 300px;
+    }
 }

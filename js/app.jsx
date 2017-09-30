@@ -4,14 +4,13 @@ import ColorInput from './colorinput.jsx';
 import ConvertedColors from './convertedcolors.jsx';
 
 document.addEventListener('DOMContentLoaded',function(){
-    
+
     class ColorBackground extends React.Component {
 
         render() {
             return (
                 <div>
                     <div className="selectedColor" style={{background:this.props.color}}>
-                        {this.props.color}
                     </div>
                 </div>
             )
@@ -23,12 +22,12 @@ document.addEventListener('DOMContentLoaded',function(){
         constructor(props) {
             super(props);
             this.state = {
-                activeColor : 'white',
-                colorFormat : ''
+                activeColor : '',
+                colorFormat : '',
             };
         }
 
-        handleButtonClick = (color,format) => {
+        handleButtonClick = (color,format,message) => {
             this.setState({
                 activeColor : color,
                 colorFormat : format,
@@ -38,8 +37,9 @@ document.addEventListener('DOMContentLoaded',function(){
         render() {
             return (
                 <div>
-                    <ColorInput getColor={this.handleButtonClick}/>
+                    <h1>Color Converter ReactJS</h1>
                     <ColorBackground color={this.state.activeColor}/>
+                    <ColorInput getColor={this.handleButtonClick}/>
                     <ConvertedColors color={this.state.activeColor} colorFormat={this.state.colorFormat}/>
                 </div>
             )

@@ -8,7 +8,7 @@ class ColorInput extends React.Component {
         this.state = {
             inputValue : "",
             activeColor : "",
-            validateColor : false
+            validateColor : false,
         };
     }
 
@@ -22,6 +22,8 @@ class ColorInput extends React.Component {
     handleButtonOnClick = (event) => {
         if((typeof this.props.getColor === 'function') && (this.state.validateColor)){
             this.props.getColor(this.state.activeColor, this.state.validateColor);
+        }else{
+            alert("Invalid color format!");
         }
     };
 
@@ -48,7 +50,6 @@ class ColorInput extends React.Component {
             }
             this.setState({
                 activeColor : fixColor,
-                // .toString().match(/\#([A-Za-z0-9]{6})/g),
                 validateColor :  'hex',
             })
         }
@@ -89,14 +90,15 @@ class ColorInput extends React.Component {
     }
 
     render() {
-
         return (
             <div className="inputColor">
-                <input type='text' placeholder="enter a color"
+                <input className="inputField" type='text' placeholder="Enter a color ex. rgb(255,0,45)"
                     value={this.state.inputValue}
                     onChange={this.handleInputOnChange}/>
-                <button
-                    onClick={this.handleButtonOnClick}>go</button>
+                <button className="convertBtn"
+                    onClick={this.handleButtonOnClick}>
+                    Convert
+                </button>
             </div>
         )
     }
