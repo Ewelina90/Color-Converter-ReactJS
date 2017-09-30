@@ -9941,74 +9941,62 @@ document.addEventListener('DOMContentLoaded', function () {
             }
 
             return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_ref = ConvertedColors.__proto__ || Object.getPrototypeOf(ConvertedColors)).call.apply(_ref, [this].concat(args))), _this), _this.hexToRgb = function (color) {
-                var hex = color.match(/[A-Za-z0-9]{2}/g).map(function (v) {
-                    return parseInt(v, 16);
+                // Conversion to rgb format
+                var hex = color.match(/[A-Za-z0-9]{2}/g).map(function (el) {
+                    return parseInt(el, 16);
                 });
+                // Return color in rgb format
                 return 'rgb(' + hex[0] + ',' + hex[1] + ',' + hex[2] + ')';
             }, _this.rgbToHex = function (color) {
-                console.log('color' + color);
                 var rgb = color.match(/^rgb\((\d{1,3})\,(\d{1,3})\,(\d{1,3})\)$/i);
-                console.log('rgb ' + rgb);
-                var c = function c(v) {
-                    var hex = parseInt(v).toString(16);
+                // Conversion to hex format
+                var convertToHex = function convertToHex(color) {
+                    var hex = parseInt(color).toString(16);
                     return hex.length === 1 ? "0" + hex : hex;
                 };
-                return "#" + c(rgb[1]) + c(rgb[2]) + c(rgb[3]);
+                // Return color in hex format
+                return "#" + convertToHex(rgb[1]) + convertToHex(rgb[2]) + convertToHex(rgb[3]);
             }, _this.rgbToHsl = function (color) {
-                console.log(color);
                 var rgb = color.match(/^rgb\((\d{1,3})\,(\d{1,3})\,(\d{1,3})\)$/i);
+                // Selecting r - red, g - green, b - blue values
                 var r = (parseInt(rgb[1]) / 255).toFixed(3);
                 var g = (parseInt(rgb[2]) / 255).toFixed(3);
                 var b = (parseInt(rgb[3]) / 255).toFixed(3);
-                console.log(r, g, b);
+                // Choosing max and min values
                 var max = Math.max(r, g, b);
                 var min = Math.min(r, g, b);
-                console.log(max, min);
-
-                //  L calculation
+                //  L - lightness calculation
                 var L = (max + min) / 2;
+                //  Calculating delta value
                 var delta = max - min;
-                console.log("l " + L);
+                //  Declaring S - saturation and H - hue
                 var S = 0;
                 var H = 0;
-
-                //  S calculation
+                //  S  value calculation
                 if (delta === 0) {
                     S = 0;
-                    // H = 0;
                 } else if (delta < 0 || delta > 0) {
-                    S = delta / (1 - Math.abs(2.0 * L - 1)) * 100;
-                    console.log('s bef  ' + S);
                     S = Math.round(delta / (1 - Math.abs(2.0 * L - 1)) * 100);
                 }
-                // else if(L < 0.5){
-                //     S = Math.round(((max-min)/(max+min))*100);
-                //     console.log("s " +S);
-                // }else if(L > 0.5){
-                //     S = Math.round(((max-min)/(2.0-max-min))*100);
-                // }
-                console.log("s " + S);
-                // H calculation
+                // H value calculation
                 if (delta === 0) {
                     H = 0;
                 } else {
                     switch (true) {
                         case max == r:
                             H = (g - b) / delta % 6 * 60.0;
-                            console.log('r ' + H);
                             break;
                         case max == g:
                             H = (2.0 + (b - r) / delta) * 60.0;
-                            console.log('g' + H);
                             break;
                         case max == b:
-                            console.log('blue');
                             H = (4.0 + (r - g) / delta) * 60.0;
                             break;
                         default:
                             H = 0;
                     }
                 }
+                //  If value is negative add 360
                 var negative = function negative(value) {
                     if (value < 0) {
                         return value + 360.0;
@@ -10016,36 +10004,25 @@ document.addEventListener('DOMContentLoaded', function () {
                         return value;
                     }
                 };
-                console.log("h " + H);
                 H = negative(H);
-                console.log("h " + H);
-
+                // Return color in hsl format
                 return 'hsl(' + Math.round(H) + ',' + S + '%,' + Math.round(L * 100) + '%)';
             }, _this.hslToRgb = function (color) {
-                console.log(color);
                 var hsl = color.match(/^hsl\((\d{1,3})\,(\d{1,3})\%\,(\d{1,3})\%\)$/i);
-                console.log(hsl);
+                // Selecting H - hue, S - saturation, L - lightness values
                 var H = parseInt(hsl[1]);
                 if (H === 360) {
                     H = 359.0;
                 }
-                console.log(H);
                 var S = parseInt(hsl[2]) / 100;
                 var L = parseInt(hsl[3]) / 100;
-                console.log(H, S, L);
-
-                // let R = 0;
-                // let G = 0;
-                // let B = 0;
-                var result = 0;
-
+                // Calculate variable values
                 var C = (1 - Math.abs(2 * L - 1)) * S;
-                console.log("c " + C);
                 var X = C * (1 - Math.abs(H / 60 % 2 - 1));
-                console.log("X " + X);
                 var m = L - C / 2;
-                console.log("m " + m);
-
+                // Declaring result container
+                var result = 0;
+                // Calculate result base on H value
                 if (H >= 0 && H < 360 && S >= 0 && S <= 1 && L >= 0 && L <= 1) {
                     switch (true) {
                         case H >= 0 && H < 60:
@@ -10069,179 +10046,99 @@ document.addEventListener('DOMContentLoaded', function () {
                         default:
                     }
                 }
-                console.log(result);
+                // Calculate R, G, B colors values
                 var R = Math.round((result[0] + m) * 255);
                 var G = Math.round((result[1] + m) * 255);
                 var B = Math.round((result[2] + m) * 255);
-                console.log((result[0] + m) * 255, (result[1] + m) * 255, (result[2] + m) * 255);
-                console.log(R, G, B);
+                // Return color in rgb format
                 return 'rgb(' + R + ',' + G + ',' + B + ')';
-                // let R = 0;
-                // let G = 0;
-                // let B = 0;
-                //
-                // let temp1 = 0;
-                // let temp2 = 0;
-                //
-                // console.log(H, S, L);
-                // if(S === 0){
-                //     const temp = (L)*255;
-                //     R = temp;
-                //     G = temp;
-                //     B = temp;
-                //     console.log(R,G,B);
-                // }else{
-                //     if(L < 0.5){
-                //         temp1 = L*(1.0+S);
-                //     }else if(L >= 0.5) {
-                //         temp1 = (L+S)-(L*S);
-                //     }
-                //     console.log(temp1);
-                //     temp2 = 2*L - temp1;
-                //
-                //     H = H/360;
-                //
-                //     let tempR = H + 0.333 ;
-                //     let tempG = H;
-                //     let tempB = H - 0.333;
-                //
-                //     const abs = (value) => {
-                //         if(value < 0){
-                //             value += 1.0;
-                //         }else if(value > 1){
-                //             value -= 1.0;
-                //         }
-                //         return value;
-                //     }
-                //     tempR = abs(tempR);
-                //     tempG = abs(tempG);
-                //     tempB = abs(tempB);
-                //
-                //     console.log("tempR " +tempR,tempG,tempB);
-                //
-                //     // 6
-                //     const calculateColor = (tempColor) => {
-                //         if(6*tempColor < 1){
-                //             console.log("6 "+ (temp2+(temp1-temp2)*tempColor*6));
-                //             return Math.abs((temp2+(temp1-temp2)*tempColor*6));
-                //         }else if(6*tempColor > 1){
-                //             if(2*tempColor < 1){
-                //                 console.log("2 "+ temp1);
-                //                 return temp1;
-                //             }else if(2*tempColor >1){
-                //                 if(3*tempColor < 2){
-                //                     console.log("3 1 "+ (temp2+(temp1-temp2)*(0.666-tempColor)*6));
-                //                     return Math.abs((temp2+(temp1-temp2)*(0.666-tempColor)*6));
-                //                 }else if(3*tempColor > 2){
-                //                     console.log("3 2 " + temp2);
-                //                     return temp2;
-                //                 }
-                //             }
-                //         }
-                //     }
-                //     R = Math.round(calculateColor(tempR)*255);
-                //     console.log("r" +R);
-                //     console.log(typeof(tempG));
-                //     G = Math.round(calculateColor(tempG)*255);
-                //     console.log(G);
-                //
-                //     B = Math.round(calculateColor(tempB)*255);
-                //     console.log(B);
-                //
-                //
-                // }
-                //
-                // console.log(`rgb(${R}, ${G}, ${B})`);
-                //
-                // return `rgb(${R},${G},${B})`;
             }, _temp), _possibleConstructorReturn(_this, _ret);
         }
+
+        //  Hex to RGB conversion
+
+
+        // RGB to HEX conversion
+
+
+        //  RGB to HSL conversion based on algorithm from http://www.rapidtables.com/convert/color/rgb-to-hsl.htm
+
+
+        //  HSL to RGB conversion based on algorithm from http://www.rapidtables.com/convert/color/hsl-to-rgb.htm
+
 
         _createClass(ConvertedColors, [{
             key: 'render',
             value: function render() {
                 if (this.props.colorFormat === 'rgb') {
                     var hex = this.rgbToHex(this.props.color);
-                    var rgb = this.rgbToHsl(this.props.color);
+                    var hsl = this.rgbToHsl(this.props.color);
 
                     return _react2.default.createElement(
                         'div',
                         { className: 'convertedColor' },
-                        hex,
-                        rgb,
-                        '// ',
-                        _react2.default.createElement(
-                            'h3',
-                            { id: 'rgb' },
-                            this.props.color
-                        ),
-                        '// ',
                         _react2.default.createElement(
                             'h3',
                             { id: 'hsl' },
-                            this.props.colorFormat
+                            this.props.color
                         ),
-                        '// ',
+                        _react2.default.createElement(
+                            'h3',
+                            { id: 'rgb' },
+                            hsl
+                        ),
                         _react2.default.createElement(
                             'h3',
                             { id: 'hex' },
-                            this.props.color
+                            hex
                         )
                     );
                 } else if (this.props.colorFormat === 'hex') {
-                    var _rgb = this.hexToRgb(this.props.color);
-                    var hsl = this.rgbToHsl(_rgb);
+                    var rgb = this.hexToRgb(this.props.color);
+                    var _hsl = this.rgbToHsl(rgb);
                     return _react2.default.createElement(
                         'div',
                         { className: 'convertedColor' },
-                        _rgb,
-                        hsl,
                         _react2.default.createElement(
                             'h3',
-                            { id: 'rgb' },
+                            { id: 'hsl' },
                             this.props.color
                         ),
                         _react2.default.createElement(
                             'h3',
-                            { id: 'hsl' },
-                            this.props.colorFormat
+                            { id: 'rgb' },
+                            rgb
                         ),
                         _react2.default.createElement(
                             'h3',
                             { id: 'hex' },
-                            this.props.color
+                            _hsl
                         )
                     );
                 } else if (this.props.colorFormat === 'hsl') {
-                    var _rgb2 = this.hslToRgb(this.props.color);
-                    var _hex = this.rgbToHex(_rgb2);
+                    var _rgb = this.hslToRgb(this.props.color);
+                    var _hex = this.rgbToHex(_rgb);
                     return _react2.default.createElement(
                         'div',
                         { className: 'convertedColor' },
-                        _rgb2,
-                        _hex,
                         _react2.default.createElement(
                             'h3',
-                            { id: 'rgb' },
+                            { id: 'hsl' },
                             this.props.color
                         ),
                         _react2.default.createElement(
                             'h3',
-                            { id: 'hsl' },
-                            this.props.colorFormat
+                            { id: 'rgb' },
+                            _rgb
                         ),
                         _react2.default.createElement(
                             'h3',
                             { id: 'hex' },
-                            this.props.color
+                            _hex
                         )
                     );
                 } else {
-                    return _react2.default.createElement(
-                        'h3',
-                        { id: 'hsl' },
-                        this.props.colorFormat
-                    );
+                    return null;
                 }
             }
         }]);

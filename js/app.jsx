@@ -6,77 +6,68 @@ document.addEventListener('DOMContentLoaded',function(){
 
     class ConvertedColors extends React.Component {
 
+        //  Hex to RGB conversion
         hexToRgb = (color) => {
-            let hex = color.match(/[A-Za-z0-9]{2}/g).map(v => parseInt(v, 16));
+            // Conversion to rgb format
+            let hex = color.match(/[A-Za-z0-9]{2}/g).map(el => parseInt(el, 16));
+            // Return color in rgb format
             return `rgb(${hex[0]},${hex[1]},${hex[2]})`;
         }
 
+        // RGB to HEX conversion
         rgbToHex = (color) => {
-            console.log('color'+ color);
             let rgb = color.match(/^rgb\((\d{1,3})\,(\d{1,3})\,(\d{1,3})\)$/i);
-            console.log('rgb '+ rgb);
-            const c = (v) => {
-                let hex = parseInt(v).toString(16);
+            // Conversion to hex format
+            const convertToHex = (color) => {
+                let hex = parseInt(color).toString(16);
                 return hex.length === 1 ? "0" + hex : hex;
             }
-            return "#" + c(rgb[1]) + c(rgb[2]) + c(rgb[3]);
+            // Return color in hex format
+            return "#" + convertToHex(rgb[1]) + convertToHex(rgb[2]) + convertToHex(rgb[3]);
         }
 
+        //  RGB to HSL conversion based on algorithm from http://www.rapidtables.com/convert/color/rgb-to-hsl.htm
         rgbToHsl = (color) => {
-            console.log(color);
-            let rgb = color.match(/^rgb\((\d{1,3})\,(\d{1,3})\,(\d{1,3})\)$/i);
+            const rgb = color.match(/^rgb\((\d{1,3})\,(\d{1,3})\,(\d{1,3})\)$/i);
+            // Selecting r - red, g - green, b - blue values
             const r = (parseInt(rgb[1])/255).toFixed(3);
             const g = (parseInt(rgb[2])/255).toFixed(3);
             const b = (parseInt(rgb[3])/255).toFixed(3);
-            console.log(r,g,b);
+            // Choosing max and min values
             const max = Math.max(r,g,b);
             const min = Math.min(r,g,b);
-            console.log(max,min);
-
-            //  L calculation
+            //  L - lightness calculation
             const L = (max+min)/2;
+            //  Calculating delta value
             const delta = max - min;
-            console.log("l " +L);
+            //  Declaring S - saturation and H - hue
             let S = 0;
             let H = 0;
-
-            //  S calculation
+            //  S  value calculation
             if(delta === 0){
                 S = 0;
-                // H = 0;
             }else if((delta < 0) || (delta > 0)){
-                S = (delta/(1 - Math.abs(2.0*L-1)))*100;
-                console.log('s bef  '+ S);
                 S = Math.round((delta/(1 - Math.abs(2.0*L-1)))*100);
             }
-            // else if(L < 0.5){
-            //     S = Math.round(((max-min)/(max+min))*100);
-            //     console.log("s " +S);
-            // }else if(L > 0.5){
-            //     S = Math.round(((max-min)/(2.0-max-min))*100);
-            // }
-            console.log("s " +S);
-            // H calculation
+            // H value calculation
             if(delta === 0){
                 H = 0;
             }else{
                 switch (true) {
                     case (max == r):
                         H = (((g-b)/delta) % 6)*60.0;
-                        console.log('r '+ H);
                         break;
                     case (max == g):
                         H = (2.0 + (b-r)/delta)*60.0;
-                        console.log('g' + H);
                         break;
                     case (max == b):
-                    console.log('blue');
                         H = (4.0 + (r-g)/delta)*60.0;
                         break;
                     default:
                         H = 0;
                 }
             }
+            //  If value is negative add 360
             const negative = (value) => {
                 if(value < 0){
                     return value + 360.0;
@@ -84,38 +75,28 @@ document.addEventListener('DOMContentLoaded',function(){
                     return value;
                 }
             }
-            console.log("h "+H);
             H = negative(H);
-            console.log("h "+H);
-
+            // Return color in hsl format
             return `hsl(${Math.round(H)},${S}%,${Math.round(L*100)}%)`;
         }
 
+        //  HSL to RGB conversion based on algorithm from http://www.rapidtables.com/convert/color/hsl-to-rgb.htm
         hslToRgb = (color) => {
-            console.log(color);
             const hsl = color.match(/^hsl\((\d{1,3})\,(\d{1,3})\%\,(\d{1,3})\%\)$/i);
-            console.log(hsl);
+            // Selecting H - hue, S - saturation, L - lightness values
             let H = parseInt(hsl[1]);
             if(H === 360){
                 H = 359.0;
             }
-            console.log(H);
             const S = (parseInt(hsl[2]))/100;
             const L = (parseInt(hsl[3]))/100;
-            console.log(H,S,L);
-
-            // let R = 0;
-            // let G = 0;
-            // let B = 0;
-            let result = 0;
-
-            let C = (1 - Math.abs(2*L - 1))*S;
-            console.log("c " + C);
-            let X = C*(1 - Math.abs((H/60)%2 - 1));
-            console.log("X " +X);
+            // Calculate variable values
+            const C = (1 - Math.abs(2*L - 1))*S;
+            const X = C*(1 - Math.abs((H/60)%2 - 1));
             const m = L - C/2;
-            console.log("m "+m);
-
+            // Declaring result container
+            let result = 0;
+            // Calculate result base on H value
             if( ((H >= 0) && (H < 360)) && ((S >= 0) && (S <= 1)) && ((L >= 0) && (L <=1))){
                 switch (true) {
                     case ((H >= 0) && (H < 60)):
@@ -139,119 +120,34 @@ document.addEventListener('DOMContentLoaded',function(){
                     default:
                 }
             }
-            console.log(result);
+            // Calculate R, G, B colors values
             const R = Math.round((result[0]+m)*255);
             const G = Math.round((result[1]+m)*255);
             const B = Math.round((result[2]+m)*255);
-            console.log((result[0]+m)*255, (result[1]+m)*255, (result[2]+m)*255 );
-            console.log(R,G,B);
+            // Return color in rgb format
             return `rgb(${R},${G},${B})`;
-            // let R = 0;
-            // let G = 0;
-            // let B = 0;
-            //
-            // let temp1 = 0;
-            // let temp2 = 0;
-            //
-            // console.log(H, S, L);
-            // if(S === 0){
-            //     const temp = (L)*255;
-            //     R = temp;
-            //     G = temp;
-            //     B = temp;
-            //     console.log(R,G,B);
-            // }else{
-            //     if(L < 0.5){
-            //         temp1 = L*(1.0+S);
-            //     }else if(L >= 0.5) {
-            //         temp1 = (L+S)-(L*S);
-            //     }
-            //     console.log(temp1);
-            //     temp2 = 2*L - temp1;
-            //
-            //     H = H/360;
-            //
-            //     let tempR = H + 0.333 ;
-            //     let tempG = H;
-            //     let tempB = H - 0.333;
-            //
-            //     const abs = (value) => {
-            //         if(value < 0){
-            //             value += 1.0;
-            //         }else if(value > 1){
-            //             value -= 1.0;
-            //         }
-            //         return value;
-            //     }
-            //     tempR = abs(tempR);
-            //     tempG = abs(tempG);
-            //     tempB = abs(tempB);
-            //
-            //     console.log("tempR " +tempR,tempG,tempB);
-            //
-            //     // 6
-            //     const calculateColor = (tempColor) => {
-            //         if(6*tempColor < 1){
-            //             console.log("6 "+ (temp2+(temp1-temp2)*tempColor*6));
-            //             return Math.abs((temp2+(temp1-temp2)*tempColor*6));
-            //         }else if(6*tempColor > 1){
-            //             if(2*tempColor < 1){
-            //                 console.log("2 "+ temp1);
-            //                 return temp1;
-            //             }else if(2*tempColor >1){
-            //                 if(3*tempColor < 2){
-            //                     console.log("3 1 "+ (temp2+(temp1-temp2)*(0.666-tempColor)*6));
-            //                     return Math.abs((temp2+(temp1-temp2)*(0.666-tempColor)*6));
-            //                 }else if(3*tempColor > 2){
-            //                     console.log("3 2 " + temp2);
-            //                     return temp2;
-            //                 }
-            //             }
-            //         }
-            //     }
-            //     R = Math.round(calculateColor(tempR)*255);
-            //     console.log("r" +R);
-            //     console.log(typeof(tempG));
-            //     G = Math.round(calculateColor(tempG)*255);
-            //     console.log(G);
-            //
-            //     B = Math.round(calculateColor(tempB)*255);
-            //     console.log(B);
-            //
-            //
-            // }
-            //
-            // console.log(`rgb(${R}, ${G}, ${B})`);
-            //
-            // return `rgb(${R},${G},${B})`;
-
         }
 
         render() {
             if(this.props.colorFormat === 'rgb'){
                 const hex = this.rgbToHex(this.props.color);
-                const rgb = this.rgbToHsl(this.props.color);
+                const hsl = this.rgbToHsl(this.props.color);
 
                 return (
                     <div className="convertedColor">
-                        {hex}
-                        {rgb}
-                        // <h3 id="rgb">{this.props.color}</h3>
-                        // <h3 id="hsl">{this.props.colorFormat}</h3>
-                        // <h3 id="hex">{this.props.color}</h3>
+                        <h3 id="hsl">{this.props.color}</h3>
+                        <h3 id="rgb">{hsl}</h3>
+                        <h3 id="hex">{hex}</h3>
                     </div>
                 )
-            }
-            else if(this.props.colorFormat === 'hex'){
+            }else if(this.props.colorFormat === 'hex'){
                 const rgb = this.hexToRgb(this.props.color);
                 const hsl = this.rgbToHsl(rgb);
                 return (
                     <div className="convertedColor">
-                        {rgb}
-                        {hsl}
-                        <h3 id="rgb">{this.props.color}</h3>
-                        <h3 id="hsl">{this.props.colorFormat}</h3>
-                        <h3 id="hex">{this.props.color}</h3>
+                        <h3 id="hsl">{this.props.color}</h3>
+                        <h3 id="rgb">{rgb}</h3>
+                        <h3 id="hex">{hsl}</h3>
                     </div>
                 )
             }else if(this.props.colorFormat === 'hsl'){
@@ -259,17 +155,13 @@ document.addEventListener('DOMContentLoaded',function(){
                 const hex = this.rgbToHex(rgb);
                 return (
                     <div className="convertedColor">
-                        {rgb}
-                        {hex}
-                        <h3 id="rgb">{this.props.color}</h3>
-                        <h3 id="hsl">{this.props.colorFormat}</h3>
-                        <h3 id="hex">{this.props.color}</h3>
+                        <h3 id="hsl">{this.props.color}</h3>
+                        <h3 id="rgb">{rgb}</h3>
+                        <h3 id="hex">{hex}</h3>
                     </div>
                 )
-            }
-
-            else{
-                return <h3 id="hsl">{this.props.colorFormat}</h3>;
+            }else{
+                return null;
             }
         }
     }
