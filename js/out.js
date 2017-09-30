@@ -9944,7 +9944,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 var hex = color.match(/[A-Za-z0-9]{2}/g).map(function (v) {
                     return parseInt(v, 16);
                 });
-                return 'rgb(' + hex[0] + ', ' + hex[1] + ', ' + hex[2] + ')';
+                return 'rgb(' + hex[0] + ',' + hex[1] + ',' + hex[2] + ')';
             }, _this.rgbToHex = function (color) {
                 console.log('color' + color);
                 var rgb = color.match(/^rgb\((\d{1,3})\,(\d{1,3})\,(\d{1,3})\)$/i);
@@ -9955,6 +9955,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 };
                 return "#" + c(rgb[1]) + c(rgb[2]) + c(rgb[3]);
             }, _this.rgbToHsl = function (color) {
+                console.log(color);
                 var rgb = color.match(/^rgb\((\d{1,3})\,(\d{1,3})\,(\d{1,3})\)$/i);
                 var r = (parseInt(rgb[1]) / 255).toFixed(3);
                 var g = (parseInt(rgb[2]) / 255).toFixed(3);
@@ -9976,6 +9977,8 @@ document.addEventListener('DOMContentLoaded', function () {
                     S = 0;
                     // H = 0;
                 } else if (delta < 0 || delta > 0) {
+                    S = delta / (1 - Math.abs(2.0 * L - 1)) * 100;
+                    console.log('s bef  ' + S);
                     S = Math.round(delta / (1 - Math.abs(2.0 * L - 1)) * 100);
                 }
                 // else if(L < 0.5){
@@ -10019,83 +10022,138 @@ document.addEventListener('DOMContentLoaded', function () {
 
                 return 'hsl(' + Math.round(H) + ',' + S + '%,' + Math.round(L * 100) + '%)';
             }, _this.hslToRgb = function (color) {
+                console.log(color);
                 var hsl = color.match(/^hsl\((\d{1,3})\,(\d{1,3})\%\,(\d{1,3})\%\)$/i);
                 console.log(hsl);
                 var H = parseInt(hsl[1]);
+                if (H === 360) {
+                    H = 359.0;
+                }
+                console.log(H);
                 var S = parseInt(hsl[2]) / 100;
                 var L = parseInt(hsl[3]) / 100;
-                var R = 0;
-                var G = 0;
-                var B = 0;
-
-                var temp1 = 0;
-                var temp2 = 0;
-
                 console.log(H, S, L);
-                if (S === 0) {
-                    var temp = L * 255;
-                    R = temp;
-                    G = temp;
-                    B = temp;
-                    console.log(R, G, B);
-                } else {
-                    if (L < 0.5) {
-                        temp1 = L * (1.0 + S);
-                    } else if (L >= 0.5) {
-                        temp1 = L + S - L * S;
+
+                // let R = 0;
+                // let G = 0;
+                // let B = 0;
+                var result = 0;
+
+                var C = (1 - Math.abs(2 * L - 1)) * S;
+                console.log("c " + C);
+                var X = C * (1 - Math.abs(H / 60 % 2 - 1));
+                console.log("X " + X);
+                var m = L - C / 2;
+                console.log("m " + m);
+
+                if (H >= 0 && H < 360 && S >= 0 && S <= 1 && L >= 0 && L <= 1) {
+                    switch (true) {
+                        case H >= 0 && H < 60:
+                            result = [C, X, 0];
+                            break;
+                        case H >= 60 && H < 120:
+                            result = [X, C, 0];
+                            break;
+                        case H >= 120 && H < 180:
+                            result = [0, C, X];
+                            break;
+                        case H >= 180 && H < 240:
+                            result = [0, X, C];
+                            break;
+                        case H >= 240 && H < 300:
+                            result = [X, 0, C];
+                            break;
+                        case H >= 300 && H < 360:
+                            result = [C, 0, X];
+                            break;
+                        default:
                     }
-
-                    temp2 = 2 * L - temp1;
-
-                    H = H / 360;
-
-                    var tempR = H + 0.333;
-                    var tempG = H;
-                    var tempB = H - 0.333;
-
-                    var abs = function abs(value) {
-                        if (value < 0) {
-                            value += 1;
-                        } else if (value > 1) {
-                            value -= 1;
-                        }
-                        return value;
-                    };
-                    tempR = abs(tempR);
-                    tempG = abs(tempG);
-                    tempB = abs(tempB);
-
-                    console.log(tempR, tempG, tempB);
-
-                    // 6
-                    var calculateColor = function calculateColor(tempColor) {
-                        if (6 * tempColor < 1) {
-                            return temp2 + (temp1 - temp2) * tempColor * 6;
-                        } else if (6 * tempColor > 1) {
-                            if (2 * tempColor < 1) {
-                                return temp1;
-                            } else if (2 * tempColor > 1) {
-                                if (3 * tempColor < 2) {
-                                    return temp2 + (temp1 - temp2) * (0.666 - tempColor) * 6;
-                                } else if (3 * tempColor > 2) {
-                                    return temp2;
-                                }
-                            }
-                        }
-                    };
-                    R = Math.round(calculateColor(tempR).toFixed(4) * 255);
-                    console.log(R);
-
-                    G = Math.round(calculateColor(tempG).toFixed(4) * 255);
-                    console.log(G);
-
-                    B = Math.round(calculateColor(tempB).toFixed(4) * 255);
-                    console.log(B);
-
-                    console.log('rgb(' + R + ', ' + G + ', ' + B + ')');
-
-                    return 'rgb(' + R + ',' + G + ',' + B + ')';
                 }
+                console.log(result);
+                var R = Math.round((result[0] + m) * 255);
+                var G = Math.round((result[1] + m) * 255);
+                var B = Math.round((result[2] + m) * 255);
+                console.log((result[0] + m) * 255, (result[1] + m) * 255, (result[2] + m) * 255);
+                console.log(R, G, B);
+                return 'rgb(' + R + ',' + G + ',' + B + ')';
+                // let R = 0;
+                // let G = 0;
+                // let B = 0;
+                //
+                // let temp1 = 0;
+                // let temp2 = 0;
+                //
+                // console.log(H, S, L);
+                // if(S === 0){
+                //     const temp = (L)*255;
+                //     R = temp;
+                //     G = temp;
+                //     B = temp;
+                //     console.log(R,G,B);
+                // }else{
+                //     if(L < 0.5){
+                //         temp1 = L*(1.0+S);
+                //     }else if(L >= 0.5) {
+                //         temp1 = (L+S)-(L*S);
+                //     }
+                //     console.log(temp1);
+                //     temp2 = 2*L - temp1;
+                //
+                //     H = H/360;
+                //
+                //     let tempR = H + 0.333 ;
+                //     let tempG = H;
+                //     let tempB = H - 0.333;
+                //
+                //     const abs = (value) => {
+                //         if(value < 0){
+                //             value += 1.0;
+                //         }else if(value > 1){
+                //             value -= 1.0;
+                //         }
+                //         return value;
+                //     }
+                //     tempR = abs(tempR);
+                //     tempG = abs(tempG);
+                //     tempB = abs(tempB);
+                //
+                //     console.log("tempR " +tempR,tempG,tempB);
+                //
+                //     // 6
+                //     const calculateColor = (tempColor) => {
+                //         if(6*tempColor < 1){
+                //             console.log("6 "+ (temp2+(temp1-temp2)*tempColor*6));
+                //             return Math.abs((temp2+(temp1-temp2)*tempColor*6));
+                //         }else if(6*tempColor > 1){
+                //             if(2*tempColor < 1){
+                //                 console.log("2 "+ temp1);
+                //                 return temp1;
+                //             }else if(2*tempColor >1){
+                //                 if(3*tempColor < 2){
+                //                     console.log("3 1 "+ (temp2+(temp1-temp2)*(0.666-tempColor)*6));
+                //                     return Math.abs((temp2+(temp1-temp2)*(0.666-tempColor)*6));
+                //                 }else if(3*tempColor > 2){
+                //                     console.log("3 2 " + temp2);
+                //                     return temp2;
+                //                 }
+                //             }
+                //         }
+                //     }
+                //     R = Math.round(calculateColor(tempR)*255);
+                //     console.log("r" +R);
+                //     console.log(typeof(tempG));
+                //     G = Math.round(calculateColor(tempG)*255);
+                //     console.log(G);
+                //
+                //     B = Math.round(calculateColor(tempB)*255);
+                //     console.log(B);
+                //
+                //
+                // }
+                //
+                // console.log(`rgb(${R}, ${G}, ${B})`);
+                //
+                // return `rgb(${R},${G},${B})`;
             }, _temp), _possibleConstructorReturn(_this, _ret);
         }
 
@@ -10109,7 +10167,35 @@ document.addEventListener('DOMContentLoaded', function () {
                     return _react2.default.createElement(
                         'div',
                         { className: 'convertedColor' },
+                        hex,
                         rgb,
+                        '// ',
+                        _react2.default.createElement(
+                            'h3',
+                            { id: 'rgb' },
+                            this.props.color
+                        ),
+                        '// ',
+                        _react2.default.createElement(
+                            'h3',
+                            { id: 'hsl' },
+                            this.props.colorFormat
+                        ),
+                        '// ',
+                        _react2.default.createElement(
+                            'h3',
+                            { id: 'hex' },
+                            this.props.color
+                        )
+                    );
+                } else if (this.props.colorFormat === 'hex') {
+                    var _rgb = this.hexToRgb(this.props.color);
+                    var hsl = this.rgbToHsl(_rgb);
+                    return _react2.default.createElement(
+                        'div',
+                        { className: 'convertedColor' },
+                        _rgb,
+                        hsl,
                         _react2.default.createElement(
                             'h3',
                             { id: 'rgb' },
@@ -10126,35 +10212,37 @@ document.addEventListener('DOMContentLoaded', function () {
                             this.props.color
                         )
                     );
+                } else if (this.props.colorFormat === 'hsl') {
+                    var _rgb2 = this.hslToRgb(this.props.color);
+                    var _hex = this.rgbToHex(_rgb2);
+                    return _react2.default.createElement(
+                        'div',
+                        { className: 'convertedColor' },
+                        _rgb2,
+                        _hex,
+                        _react2.default.createElement(
+                            'h3',
+                            { id: 'rgb' },
+                            this.props.color
+                        ),
+                        _react2.default.createElement(
+                            'h3',
+                            { id: 'hsl' },
+                            this.props.colorFormat
+                        ),
+                        _react2.default.createElement(
+                            'h3',
+                            { id: 'hex' },
+                            this.props.color
+                        )
+                    );
+                } else {
+                    return _react2.default.createElement(
+                        'h3',
+                        { id: 'hsl' },
+                        this.props.colorFormat
+                    );
                 }
-                // else if(this.props.colorFormat === 'hex'){
-                //     const rgb = this.hexToRgb(this.props.color);
-                //     // const hsl = this.rgbToHsl(rgb);
-                //     return (
-                //         <div className="convertedColor">
-                //             {rgb}
-                //
-                //             <h3 id="rgb">{this.props.color}</h3>
-                //             <h3 id="hsl">{this.props.colorFormat}</h3>
-                //             <h3 id="hex">{this.props.color}</h3>
-                //         </div>
-                //     )
-                // }else if(this.props.colorFormat === 'hsl'){
-                //     const rgb = this.hslToRgb(this.props.color);
-                //     const hex = this.rgbToHex(rgb);
-                //     return (
-                //         <div className="convertedColor">
-                //             {rgb}
-                //             {hex}
-                //             <h3 id="rgb">{this.props.color}</h3>
-                //             <h3 id="hsl">{this.props.colorFormat}</h3>
-                //             <h3 id="hex">{this.props.color}</h3>
-                //         </div>
-                //     )
-                // }
-                else {
-                        return null;
-                    }
             }
         }]);
 
