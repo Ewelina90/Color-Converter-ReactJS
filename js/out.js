@@ -9956,45 +9956,68 @@ document.addEventListener('DOMContentLoaded', function () {
                 return "#" + c(rgb[1]) + c(rgb[2]) + c(rgb[3]);
             }, _this.rgbToHsl = function (color) {
                 var rgb = color.match(/^rgb\((\d{1,3})\,(\d{1,3})\,(\d{1,3})\)$/i);
-                var r = (parseInt(rgb[1]) / 255).toFixed(2);
-                var g = (parseInt(rgb[2]) / 255).toFixed(2);
-                var b = (parseInt(rgb[3]) / 255).toFixed(2);
+                var r = (parseInt(rgb[1]) / 255).toFixed(3);
+                var g = (parseInt(rgb[2]) / 255).toFixed(3);
+                var b = (parseInt(rgb[3]) / 255).toFixed(3);
                 console.log(r, g, b);
                 var max = Math.max(r, g, b);
                 var min = Math.min(r, g, b);
                 console.log(max, min);
+
+                //  L calculation
                 var L = (max + min) / 2;
-                console.log(L);
+                var delta = max - min;
+                console.log("l " + L);
                 var S = 0;
                 var H = 0;
-                if (min === max) {
-                    S = 0;
-                    H = 0;
-                } else if (L < 0.5) {
-                    S = Math.round((max - min) / (max + min) * 100);
-                    console.log("s " + S);
-                } else if (L > 0.5) {
-                    S = Math.round((max - min) / (2.0 - max - min) * 100);
-                }
-                console.log("s " + S);
 
-                switch (true) {
-                    case max == r:
-                        H = Math.round((g - b) / (max - min) * 60 * 100);
-                        break;
-                    case max == g:
-                        H = Math.round((2.0 + (b - r) / (max - min)) * 60 * 100);
-                        break;
-                    case max == b:
-                        console.log('blue');
-                        H = Math.round((4.0 + (r - g) / (max - min)) * 60 * 100);
-                        break;
-                    default:
-                        H = 0;
+                //  S calculation
+                if (delta === 0) {
+                    S = 0;
+                    // H = 0;
+                } else if (delta < 0 || delta > 0) {
+                    S = Math.round(delta / (1 - Math.abs(2.0 * L - 1)) * 100);
                 }
+                // else if(L < 0.5){
+                //     S = Math.round(((max-min)/(max+min))*100);
+                //     console.log("s " +S);
+                // }else if(L > 0.5){
+                //     S = Math.round(((max-min)/(2.0-max-min))*100);
+                // }
+                console.log("s " + S);
+                // H calculation
+                if (delta === 0) {
+                    H = 0;
+                } else {
+                    switch (true) {
+                        case max == r:
+                            H = (g - b) / delta % 6 * 60.0;
+                            console.log('r ' + H);
+                            break;
+                        case max == g:
+                            H = (2.0 + (b - r) / delta) * 60.0;
+                            console.log('g' + H);
+                            break;
+                        case max == b:
+                            console.log('blue');
+                            H = (4.0 + (r - g) / delta) * 60.0;
+                            break;
+                        default:
+                            H = 0;
+                    }
+                }
+                var negative = function negative(value) {
+                    if (value < 0) {
+                        return value + 360.0;
+                    } else {
+                        return value;
+                    }
+                };
                 console.log("h " + H);
-                // dokończyć zaokrąglanie
-                return 'hsl(' + H + ',' + S + '%,' + Math.round(L / 100) + '%)';
+                H = negative(H);
+                console.log("h " + H);
+
+                return 'hsl(' + Math.round(H) + ',' + S + '%,' + Math.round(L * 100) + '%)';
             }, _this.hslToRgb = function (color) {
                 var hsl = color.match(/^hsl\((\d{1,3})\,(\d{1,3})\%\,(\d{1,3})\%\)$/i);
                 console.log(hsl);
