@@ -2,20 +2,9 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import ColorInput from './colorinput.jsx';
 import ConvertedColors from './convertedcolors.jsx';
+import ColorBackground from './colorbackground.jsx';
 
 document.addEventListener('DOMContentLoaded',function(){
-
-    class ColorBackground extends React.Component {
-
-        render() {
-            return (
-                <div>
-                    <div className="selectedColor" style={{background:this.props.color}}>
-                    </div>
-                </div>
-            )
-        }
-    }
 
     class App extends React.Component {
 
