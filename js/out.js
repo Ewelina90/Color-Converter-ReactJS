@@ -9917,6 +9917,10 @@ var _colorinput = __webpack_require__(83);
 
 var _colorinput2 = _interopRequireDefault(_colorinput);
 
+var _convertedcolors = __webpack_require__(185);
+
+var _convertedcolors2 = _interopRequireDefault(_convertedcolors);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -9926,228 +9930,8 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 document.addEventListener('DOMContentLoaded', function () {
-    var ConvertedColors = function (_React$Component) {
-        _inherits(ConvertedColors, _React$Component);
-
-        function ConvertedColors() {
-            var _ref;
-
-            var _temp, _this, _ret;
-
-            _classCallCheck(this, ConvertedColors);
-
-            for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
-                args[_key] = arguments[_key];
-            }
-
-            return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_ref = ConvertedColors.__proto__ || Object.getPrototypeOf(ConvertedColors)).call.apply(_ref, [this].concat(args))), _this), _this.hexToRgb = function (color) {
-                // Conversion to rgb format
-                var hex = color.match(/[A-Za-z0-9]{2}/g).map(function (el) {
-                    return parseInt(el, 16);
-                });
-                // Return color in rgb format
-                return 'rgb(' + hex[0] + ',' + hex[1] + ',' + hex[2] + ')';
-            }, _this.rgbToHex = function (color) {
-                var rgb = color.match(/^rgb\((\d{1,3})\,(\d{1,3})\,(\d{1,3})\)$/i);
-                // Conversion to hex format
-                var convertToHex = function convertToHex(color) {
-                    var hex = parseInt(color).toString(16);
-                    return hex.length === 1 ? "0" + hex : hex;
-                };
-                // Return color in hex format
-                return "#" + convertToHex(rgb[1]) + convertToHex(rgb[2]) + convertToHex(rgb[3]);
-            }, _this.rgbToHsl = function (color) {
-                var rgb = color.match(/^rgb\((\d{1,3})\,(\d{1,3})\,(\d{1,3})\)$/i);
-                // Selecting r - red, g - green, b - blue values
-                var r = (parseInt(rgb[1]) / 255).toFixed(3);
-                var g = (parseInt(rgb[2]) / 255).toFixed(3);
-                var b = (parseInt(rgb[3]) / 255).toFixed(3);
-                // Choosing max and min values
-                var max = Math.max(r, g, b);
-                var min = Math.min(r, g, b);
-                //  L - lightness calculation
-                var L = (max + min) / 2;
-                //  Calculating delta value
-                var delta = max - min;
-                //  Declaring S - saturation and H - hue
-                var S = 0;
-                var H = 0;
-                //  S  value calculation
-                if (delta === 0) {
-                    S = 0;
-                } else if (delta < 0 || delta > 0) {
-                    S = Math.round(delta / (1 - Math.abs(2.0 * L - 1)) * 100);
-                }
-                // H value calculation
-                if (delta === 0) {
-                    H = 0;
-                } else {
-                    switch (true) {
-                        case max == r:
-                            H = (g - b) / delta % 6 * 60.0;
-                            break;
-                        case max == g:
-                            H = (2.0 + (b - r) / delta) * 60.0;
-                            break;
-                        case max == b:
-                            H = (4.0 + (r - g) / delta) * 60.0;
-                            break;
-                        default:
-                            H = 0;
-                    }
-                }
-                //  If value is negative add 360
-                var negative = function negative(value) {
-                    if (value < 0) {
-                        return value + 360.0;
-                    } else {
-                        return value;
-                    }
-                };
-                H = negative(H);
-                // Return color in hsl format
-                return 'hsl(' + Math.round(H) + ',' + S + '%,' + Math.round(L * 100) + '%)';
-            }, _this.hslToRgb = function (color) {
-                var hsl = color.match(/^hsl\((\d{1,3})\,(\d{1,3})\%\,(\d{1,3})\%\)$/i);
-                // Selecting H - hue, S - saturation, L - lightness values
-                var H = parseInt(hsl[1]);
-                if (H === 360) {
-                    H = 359.0;
-                }
-                var S = parseInt(hsl[2]) / 100;
-                var L = parseInt(hsl[3]) / 100;
-                // Calculate variable values
-                var C = (1 - Math.abs(2 * L - 1)) * S;
-                var X = C * (1 - Math.abs(H / 60 % 2 - 1));
-                var m = L - C / 2;
-                // Declaring result container
-                var result = 0;
-                // Calculate result base on H value
-                if (H >= 0 && H < 360 && S >= 0 && S <= 1 && L >= 0 && L <= 1) {
-                    switch (true) {
-                        case H >= 0 && H < 60:
-                            result = [C, X, 0];
-                            break;
-                        case H >= 60 && H < 120:
-                            result = [X, C, 0];
-                            break;
-                        case H >= 120 && H < 180:
-                            result = [0, C, X];
-                            break;
-                        case H >= 180 && H < 240:
-                            result = [0, X, C];
-                            break;
-                        case H >= 240 && H < 300:
-                            result = [X, 0, C];
-                            break;
-                        case H >= 300 && H < 360:
-                            result = [C, 0, X];
-                            break;
-                        default:
-                    }
-                }
-                // Calculate R, G, B colors values
-                var R = Math.round((result[0] + m) * 255);
-                var G = Math.round((result[1] + m) * 255);
-                var B = Math.round((result[2] + m) * 255);
-                // Return color in rgb format
-                return 'rgb(' + R + ',' + G + ',' + B + ')';
-            }, _temp), _possibleConstructorReturn(_this, _ret);
-        }
-
-        //  Hex to RGB conversion
-
-
-        // RGB to HEX conversion
-
-
-        //  RGB to HSL conversion based on algorithm from http://www.rapidtables.com/convert/color/rgb-to-hsl.htm
-
-
-        //  HSL to RGB conversion based on algorithm from http://www.rapidtables.com/convert/color/hsl-to-rgb.htm
-
-
-        _createClass(ConvertedColors, [{
-            key: 'render',
-            value: function render() {
-                if (this.props.colorFormat === 'rgb') {
-                    var hex = this.rgbToHex(this.props.color);
-                    var hsl = this.rgbToHsl(this.props.color);
-
-                    return _react2.default.createElement(
-                        'div',
-                        { className: 'convertedColor' },
-                        _react2.default.createElement(
-                            'h3',
-                            { id: 'hsl' },
-                            this.props.color
-                        ),
-                        _react2.default.createElement(
-                            'h3',
-                            { id: 'rgb' },
-                            hsl
-                        ),
-                        _react2.default.createElement(
-                            'h3',
-                            { id: 'hex' },
-                            hex
-                        )
-                    );
-                } else if (this.props.colorFormat === 'hex') {
-                    var rgb = this.hexToRgb(this.props.color);
-                    var _hsl = this.rgbToHsl(rgb);
-                    return _react2.default.createElement(
-                        'div',
-                        { className: 'convertedColor' },
-                        _react2.default.createElement(
-                            'h3',
-                            { id: 'hsl' },
-                            this.props.color
-                        ),
-                        _react2.default.createElement(
-                            'h3',
-                            { id: 'rgb' },
-                            rgb
-                        ),
-                        _react2.default.createElement(
-                            'h3',
-                            { id: 'hex' },
-                            _hsl
-                        )
-                    );
-                } else if (this.props.colorFormat === 'hsl') {
-                    var _rgb = this.hslToRgb(this.props.color);
-                    var _hex = this.rgbToHex(_rgb);
-                    return _react2.default.createElement(
-                        'div',
-                        { className: 'convertedColor' },
-                        _react2.default.createElement(
-                            'h3',
-                            { id: 'hsl' },
-                            this.props.color
-                        ),
-                        _react2.default.createElement(
-                            'h3',
-                            { id: 'rgb' },
-                            _rgb
-                        ),
-                        _react2.default.createElement(
-                            'h3',
-                            { id: 'hex' },
-                            _hex
-                        )
-                    );
-                } else {
-                    return null;
-                }
-            }
-        }]);
-
-        return ConvertedColors;
-    }(_react2.default.Component);
-
-    var ColorBackground = function (_React$Component2) {
-        _inherits(ColorBackground, _React$Component2);
+    var ColorBackground = function (_React$Component) {
+        _inherits(ColorBackground, _React$Component);
 
         function ColorBackground() {
             _classCallCheck(this, ColorBackground);
@@ -10173,26 +9957,26 @@ document.addEventListener('DOMContentLoaded', function () {
         return ColorBackground;
     }(_react2.default.Component);
 
-    var App = function (_React$Component3) {
-        _inherits(App, _React$Component3);
+    var App = function (_React$Component2) {
+        _inherits(App, _React$Component2);
 
         function App(props) {
             _classCallCheck(this, App);
 
-            var _this3 = _possibleConstructorReturn(this, (App.__proto__ || Object.getPrototypeOf(App)).call(this, props));
+            var _this2 = _possibleConstructorReturn(this, (App.__proto__ || Object.getPrototypeOf(App)).call(this, props));
 
-            _this3.handleButtonClick = function (color, format) {
-                _this3.setState({
+            _this2.handleButtonClick = function (color, format) {
+                _this2.setState({
                     activeColor: color,
                     colorFormat: format
                 });
             };
 
-            _this3.state = {
+            _this2.state = {
                 activeColor: 'white',
                 colorFormat: ''
             };
-            return _this3;
+            return _this2;
         }
 
         _createClass(App, [{
@@ -10203,7 +9987,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     null,
                     _react2.default.createElement(_colorinput2.default, { getColor: this.handleButtonClick }),
                     _react2.default.createElement(ColorBackground, { color: this.state.activeColor }),
-                    _react2.default.createElement(ConvertedColors, { color: this.state.activeColor, colorFormat: this.state.colorFormat })
+                    _react2.default.createElement(_convertedcolors2.default, { color: this.state.activeColor, colorFormat: this.state.colorFormat })
                 );
             }
         }]);
@@ -22829,6 +22613,257 @@ function traverseAllChildren(children, callback, traverseContext) {
 
 module.exports = traverseAllChildren;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
+
+/***/ }),
+/* 185 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _react = __webpack_require__(50);
+
+var _react2 = _interopRequireDefault(_react);
+
+var _reactDom = __webpack_require__(49);
+
+var _reactDom2 = _interopRequireDefault(_reactDom);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var ConvertedColors = function (_React$Component) {
+    _inherits(ConvertedColors, _React$Component);
+
+    function ConvertedColors() {
+        var _ref;
+
+        var _temp, _this, _ret;
+
+        _classCallCheck(this, ConvertedColors);
+
+        for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
+            args[_key] = arguments[_key];
+        }
+
+        return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_ref = ConvertedColors.__proto__ || Object.getPrototypeOf(ConvertedColors)).call.apply(_ref, [this].concat(args))), _this), _this.hexToRgb = function (color) {
+            // Conversion to rgb format
+            var hex = color.match(/[A-Za-z0-9]{2}/g).map(function (el) {
+                return parseInt(el, 16);
+            });
+            // Return color in rgb format
+            return 'rgb(' + hex[0] + ',' + hex[1] + ',' + hex[2] + ')';
+        }, _this.rgbToHex = function (color) {
+            var rgb = color.match(/^rgb\((\d{1,3})\,(\d{1,3})\,(\d{1,3})\)$/i);
+            // Conversion to hex format
+            var convertToHex = function convertToHex(color) {
+                var hex = parseInt(color).toString(16);
+                return hex.length === 1 ? "0" + hex : hex;
+            };
+            // Return color in hex format
+            return "#" + convertToHex(rgb[1]) + convertToHex(rgb[2]) + convertToHex(rgb[3]);
+        }, _this.rgbToHsl = function (color) {
+            var rgb = color.match(/^rgb\((\d{1,3})\,(\d{1,3})\,(\d{1,3})\)$/i);
+            // Selecting r - red, g - green, b - blue values
+            var r = (parseInt(rgb[1]) / 255).toFixed(3);
+            var g = (parseInt(rgb[2]) / 255).toFixed(3);
+            var b = (parseInt(rgb[3]) / 255).toFixed(3);
+            // Choosing max and min values
+            var max = Math.max(r, g, b);
+            var min = Math.min(r, g, b);
+            //  L - lightness calculation
+            var L = (max + min) / 2;
+            //  Calculating delta value
+            var delta = max - min;
+            //  Declaring S - saturation and H - hue
+            var S = 0;
+            var H = 0;
+            //  S  value calculation
+            if (delta === 0) {
+                S = 0;
+            } else if (delta < 0 || delta > 0) {
+                S = Math.round(delta / (1 - Math.abs(2.0 * L - 1)) * 100);
+            }
+            // H value calculation
+            if (delta === 0) {
+                H = 0;
+            } else {
+                switch (true) {
+                    case max == r:
+                        H = (g - b) / delta % 6 * 60.0;
+                        break;
+                    case max == g:
+                        H = (2.0 + (b - r) / delta) * 60.0;
+                        break;
+                    case max == b:
+                        H = (4.0 + (r - g) / delta) * 60.0;
+                        break;
+                    default:
+                        H = 0;
+                }
+            }
+            //  If value is negative add 360
+            var negative = function negative(value) {
+                if (value < 0) {
+                    return value + 360.0;
+                } else {
+                    return value;
+                }
+            };
+            H = negative(H);
+            // Return color in hsl format
+            return 'hsl(' + Math.round(H) + ',' + S + '%,' + Math.round(L * 100) + '%)';
+        }, _this.hslToRgb = function (color) {
+            var hsl = color.match(/^hsl\((\d{1,3})\,(\d{1,3})\%\,(\d{1,3})\%\)$/i);
+            // Selecting H - hue, S - saturation, L - lightness values
+            var H = parseInt(hsl[1]);
+            if (H === 360) {
+                H = 359.0;
+            }
+            var S = parseInt(hsl[2]) / 100;
+            var L = parseInt(hsl[3]) / 100;
+            // Calculate variable values
+            var C = (1 - Math.abs(2 * L - 1)) * S;
+            var X = C * (1 - Math.abs(H / 60 % 2 - 1));
+            var m = L - C / 2;
+            // Declaring result container
+            var result = 0;
+            // Calculate result base on H value
+            if (H >= 0 && H < 360 && S >= 0 && S <= 1 && L >= 0 && L <= 1) {
+                switch (true) {
+                    case H >= 0 && H < 60:
+                        result = [C, X, 0];
+                        break;
+                    case H >= 60 && H < 120:
+                        result = [X, C, 0];
+                        break;
+                    case H >= 120 && H < 180:
+                        result = [0, C, X];
+                        break;
+                    case H >= 180 && H < 240:
+                        result = [0, X, C];
+                        break;
+                    case H >= 240 && H < 300:
+                        result = [X, 0, C];
+                        break;
+                    case H >= 300 && H < 360:
+                        result = [C, 0, X];
+                        break;
+                    default:
+                }
+            }
+            // Calculate R, G, B colors values
+            var R = Math.round((result[0] + m) * 255);
+            var G = Math.round((result[1] + m) * 255);
+            var B = Math.round((result[2] + m) * 255);
+            // Return color in rgb format
+            return 'rgb(' + R + ',' + G + ',' + B + ')';
+        }, _temp), _possibleConstructorReturn(_this, _ret);
+    }
+
+    //  Hex to RGB conversion
+
+
+    // RGB to HEX conversion
+
+
+    //  RGB to HSL conversion based on algorithm from http://www.rapidtables.com/convert/color/rgb-to-hsl.htm
+
+
+    //  HSL to RGB conversion based on algorithm from http://www.rapidtables.com/convert/color/hsl-to-rgb.htm
+
+
+    _createClass(ConvertedColors, [{
+        key: 'render',
+        value: function render() {
+            if (this.props.colorFormat === 'rgb') {
+                var hex = this.rgbToHex(this.props.color);
+                var hsl = this.rgbToHsl(this.props.color);
+
+                return _react2.default.createElement(
+                    'div',
+                    { className: 'convertedColor' },
+                    _react2.default.createElement(
+                        'h3',
+                        { id: 'hsl' },
+                        this.props.color
+                    ),
+                    _react2.default.createElement(
+                        'h3',
+                        { id: 'rgb' },
+                        hsl
+                    ),
+                    _react2.default.createElement(
+                        'h3',
+                        { id: 'hex' },
+                        hex
+                    )
+                );
+            } else if (this.props.colorFormat === 'hex') {
+                var rgb = this.hexToRgb(this.props.color);
+                var _hsl = this.rgbToHsl(rgb);
+                return _react2.default.createElement(
+                    'div',
+                    { className: 'convertedColor' },
+                    _react2.default.createElement(
+                        'h3',
+                        { id: 'hsl' },
+                        this.props.color
+                    ),
+                    _react2.default.createElement(
+                        'h3',
+                        { id: 'rgb' },
+                        rgb
+                    ),
+                    _react2.default.createElement(
+                        'h3',
+                        { id: 'hex' },
+                        _hsl
+                    )
+                );
+            } else if (this.props.colorFormat === 'hsl') {
+                var _rgb = this.hslToRgb(this.props.color);
+                var _hex = this.rgbToHex(_rgb);
+                return _react2.default.createElement(
+                    'div',
+                    { className: 'convertedColor' },
+                    _react2.default.createElement(
+                        'h3',
+                        { id: 'hsl' },
+                        this.props.color
+                    ),
+                    _react2.default.createElement(
+                        'h3',
+                        { id: 'rgb' },
+                        _rgb
+                    ),
+                    _react2.default.createElement(
+                        'h3',
+                        { id: 'hex' },
+                        _hex
+                    )
+                );
+            } else {
+                return null;
+            }
+        }
+    }]);
+
+    return ConvertedColors;
+}(_react2.default.Component);
+
+exports.default = ConvertedColors;
 
 /***/ })
 /******/ ]);
