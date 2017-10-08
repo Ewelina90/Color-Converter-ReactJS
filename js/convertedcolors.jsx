@@ -74,7 +74,7 @@ class ConvertedColors extends React.Component {
         // Selecting H - hue, S - saturation, L - lightness values
         let H = parseInt(hsl[1]);
         H = H === 360 ? 359.0 : H ;
-        
+
         const S = (parseInt(hsl[2]))/100;
         const L = (parseInt(hsl[3]))/100;
         // Calculate variable values
@@ -116,7 +116,14 @@ class ConvertedColors extends React.Component {
     }
 
     render() {
-        if(this.props.colorFormat === 'rgb'){
+        if(this.props.status === 'invalid'){
+            return (
+                <div className="convertedColor">
+                    <h3 id="hsl">Invalid color format!</h3>
+                </div>
+            )
+        }
+        else if(this.props.colorFormat === 'rgb'){
             const hex = this.rgbToHex(this.props.color);
             const hsl = this.rgbToHsl(this.props.color);
 

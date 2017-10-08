@@ -9,6 +9,7 @@ class ColorInput extends React.Component {
             inputValue : "",
             activeColor : "",
             validateColor : false,
+            status : '',
         };
     }
 
@@ -20,19 +21,29 @@ class ColorInput extends React.Component {
     }
 
     handleButtonOnClick = (event) => {
-        if((typeof this.props.getColor === 'function') && (this.state.validateColor)){
-            this.props.getColor(this.state.activeColor, this.state.validateColor);
-        }else{
-            alert("Invalid color format!");
+        if(this.state.validateColor){
+            if(typeof this.props.getColor === 'function'){
+                this.props.getColor(this.state.activeColor, this.state.validateColor,);
+                this.props.validateColor(this.state.status);
+            }
+        }else {
+            if(typeof this.props.validateColor === 'function'){
+                this.props.validateColor(this.state.status);
+            }
         }
     };
 
     handleOnKeyPress = (event) => {
         if(event.key === 'Enter'){
-            if((typeof this.props.getColor === 'function') && (this.state.validateColor)){
-                this.props.getColor(this.state.activeColor, this.state.validateColor);
+            if(this.state.validateColor){
+                if(typeof this.props.getColor === 'function'){
+                    this.props.getColor(this.state.activeColor, this.state.validateColor);
+                    this.props.validateColor(this.state.status);
+                }
             }else{
-                alert("Invalid color format!");
+                if(typeof this.props.validateColor === 'function'){
+                    this.props.validateColor(this.state.status);
+                }
             }
         }
     }
@@ -61,6 +72,7 @@ class ColorInput extends React.Component {
             this.setState({
                 activeColor : fixColor,
                 validateColor :  'hex',
+                status : '',
             })
         }
         else if(color.match(hsl)){
@@ -69,11 +81,13 @@ class ColorInput extends React.Component {
                 this.setState({
                     activeColor : color,
                     validateColor : 'hsl',
+                    status : '',
                 });
             }
             else {
                 this.setState({
                     validateColor : false,
+                    status : 'invalid',
                 });
             }
         }
@@ -88,6 +102,7 @@ class ColorInput extends React.Component {
             else {
                 this.setState({
                     validateColor : false,
+                    status : 'invalid',
                 });
             }
         }
@@ -95,6 +110,7 @@ class ColorInput extends React.Component {
             this.setState({
                 activeColor : color,
                 validateColor : false,
+                status : 'invalid',
             })
         }
     }

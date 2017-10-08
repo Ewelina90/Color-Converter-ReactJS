@@ -9855,19 +9855,29 @@ var ColorInput = function (_React$Component) {
         };
 
         _this.handleButtonOnClick = function (event) {
-            if (typeof _this.props.getColor === 'function' && _this.state.validateColor) {
-                _this.props.getColor(_this.state.activeColor, _this.state.validateColor);
+            if (_this.state.validateColor) {
+                if (typeof _this.props.getColor === 'function') {
+                    _this.props.getColor(_this.state.activeColor, _this.state.validateColor);
+                    _this.props.validateColor(_this.state.status);
+                }
             } else {
-                alert("Invalid color format!");
+                if (typeof _this.props.validateColor === 'function') {
+                    _this.props.validateColor(_this.state.status);
+                }
             }
         };
 
         _this.handleOnKeyPress = function (event) {
             if (event.key === 'Enter') {
-                if (typeof _this.props.getColor === 'function' && _this.state.validateColor) {
-                    _this.props.getColor(_this.state.activeColor, _this.state.validateColor);
+                if (_this.state.validateColor) {
+                    if (typeof _this.props.getColor === 'function') {
+                        _this.props.getColor(_this.state.activeColor, _this.state.validateColor);
+                        _this.props.validateColor(_this.state.status);
+                    }
                 } else {
-                    alert("Invalid color format!");
+                    if (typeof _this.props.validateColor === 'function') {
+                        _this.props.validateColor(_this.state.status);
+                    }
                 }
             }
         };
@@ -9894,18 +9904,21 @@ var ColorInput = function (_React$Component) {
                 }
                 _this.setState({
                     activeColor: fixColor,
-                    validateColor: 'hex'
+                    validateColor: 'hex',
+                    status: ''
                 });
             } else if (color.match(hsl)) {
                 var matchHsl = color.match(hsl);
                 if (matchHsl[1] <= 360 && matchHsl[2] <= 100 && matchHsl[3] <= 100) {
                     _this.setState({
                         activeColor: color,
-                        validateColor: 'hsl'
+                        validateColor: 'hsl',
+                        status: ''
                     });
                 } else {
                     _this.setState({
-                        validateColor: false
+                        validateColor: false,
+                        status: 'invalid'
                     });
                 }
             } else if (color.match(rgb)) {
@@ -9917,13 +9930,15 @@ var ColorInput = function (_React$Component) {
                     });
                 } else {
                     _this.setState({
-                        validateColor: false
+                        validateColor: false,
+                        status: 'invalid'
                     });
                 }
             } else {
                 _this.setState({
                     activeColor: color,
-                    validateColor: false
+                    validateColor: false,
+                    status: 'invalid'
                 });
             }
         };
@@ -9931,7 +9946,8 @@ var ColorInput = function (_React$Component) {
         _this.state = {
             inputValue: "",
             activeColor: "",
-            validateColor: false
+            validateColor: false,
+            status: ''
         };
         return _this;
     }
@@ -10124,7 +10140,17 @@ var ConvertedColors = function (_React$Component) {
     _createClass(ConvertedColors, [{
         key: 'render',
         value: function render() {
-            if (this.props.colorFormat === 'rgb') {
+            if (this.props.status === 'invalid') {
+                return _react2.default.createElement(
+                    'div',
+                    { className: 'convertedColor' },
+                    _react2.default.createElement(
+                        'h3',
+                        { id: 'hsl' },
+                        'Invalid color format!'
+                    )
+                );
+            } else if (this.props.colorFormat === 'rgb') {
                 var hex = this.rgbToHex(this.props.color);
                 var hsl = this.rgbToHsl(this.props.color);
 
@@ -10255,9 +10281,16 @@ document.addEventListener('DOMContentLoaded', function () {
                 });
             };
 
+            _this.validateColor = function (statusColor) {
+                _this.setState({
+                    status: statusColor
+                });
+            };
+
             _this.state = {
                 activeColor: '',
-                colorFormat: ''
+                colorFormat: '',
+                status: ''
             };
             return _this;
         }
@@ -10274,8 +10307,8 @@ document.addEventListener('DOMContentLoaded', function () {
                         'Color Converter ReactJS'
                     ),
                     _react2.default.createElement(_colorbackground2.default, { color: this.state.activeColor }),
-                    _react2.default.createElement(_colorinput2.default, { getColor: this.handleButtonClick }),
-                    _react2.default.createElement(_convertedcolors2.default, { color: this.state.activeColor, colorFormat: this.state.colorFormat })
+                    _react2.default.createElement(_colorinput2.default, { getColor: this.handleButtonClick, validateColor: this.validateColor }),
+                    _react2.default.createElement(_convertedcolors2.default, { status: this.state.status, color: this.state.activeColor, colorFormat: this.state.colorFormat })
                 );
             }
         }]);

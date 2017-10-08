@@ -13,6 +13,7 @@ document.addEventListener('DOMContentLoaded',function(){
             this.state = {
                 activeColor : '',
                 colorFormat : '',
+                status : '',
             };
         }
 
@@ -23,13 +24,19 @@ document.addEventListener('DOMContentLoaded',function(){
             });
         }
 
+        validateColor = (statusColor) => {
+            this.setState({
+                status : statusColor,
+            });
+        }
+
         render() {
             return (
                 <div>
                     <h1>Color Converter ReactJS</h1>
                     <ColorBackground color={this.state.activeColor}/>
-                    <ColorInput getColor={this.handleButtonClick}/>
-                    <ConvertedColors color={this.state.activeColor} colorFormat={this.state.colorFormat}/>
+                    <ColorInput getColor={this.handleButtonClick} validateColor={this.validateColor}/>
+                    <ConvertedColors status={this.state.status} color={this.state.activeColor} colorFormat={this.state.colorFormat}/>
                 </div>
             )
         }
