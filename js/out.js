@@ -10037,11 +10037,8 @@ var ConvertedColors = function (_React$Component) {
             var S = 0;
             var H = 0;
             //  S  value calculation
-            if (delta === 0) {
-                S = 0;
-            } else if (delta < 0 || delta > 0) {
-                S = Math.round(delta / (1 - Math.abs(2.0 * L - 1)) * 100);
-            }
+            S = delta === 0 ? 0 : Math.round(delta / (1 - Math.abs(2.0 * L - 1)) * 100);
+
             // H value calculation
             if (delta === 0) {
                 H = 0;
@@ -10061,23 +10058,16 @@ var ConvertedColors = function (_React$Component) {
                 }
             }
             //  If value is negative add 360
-            var negative = function negative(value) {
-                if (value < 0) {
-                    return value + 360.0;
-                } else {
-                    return value;
-                }
-            };
-            H = negative(H);
+            H = H < 0 ? H + 360.0 : H;
+
             // Return color in hsl format
             return 'hsl(' + Math.round(H) + ',' + S + '%,' + Math.round(L * 100) + '%)';
         }, _this.hslToRgb = function (color) {
             var hsl = color.match(/^hsl\((\d{1,3})\,(\d{1,3})\%\,(\d{1,3})\%\)$/i);
             // Selecting H - hue, S - saturation, L - lightness values
             var H = parseInt(hsl[1]);
-            if (H === 360) {
-                H = 359.0;
-            }
+            H = H === 360 ? 359.0 : H;
+
             var S = parseInt(hsl[2]) / 100;
             var L = parseInt(hsl[3]) / 100;
             // Calculate variable values
