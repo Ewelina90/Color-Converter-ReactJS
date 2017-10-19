@@ -97,6 +97,7 @@ class ColorInput extends React.Component {
                 this.setState({
                     activeColor : color,
                     validateColor : 'rgb',
+                    status : '',
                 });
             }
             else {

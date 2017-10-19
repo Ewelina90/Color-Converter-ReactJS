@@ -9926,7 +9926,8 @@ var ColorInput = function (_React$Component) {
                 if (matchRgb[1] <= 255 && matchRgb[2] <= 255 && matchRgb[3] <= 255) {
                     _this.setState({
                         activeColor: color,
-                        validateColor: 'rgb'
+                        validateColor: 'rgb',
+                        status: ''
                     });
                 } else {
                     _this.setState({

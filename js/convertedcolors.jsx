@@ -122,8 +122,7 @@ class ConvertedColors extends React.Component {
                     <h3 id="hsl">Invalid color format!</h3>
                 </div>
             )
-        }
-        else if(this.props.colorFormat === 'rgb'){
+        }else if(this.props.colorFormat === 'rgb'){
             const hex = this.rgbToHex(this.props.color);
             const hsl = this.rgbToHsl(this.props.color);
 
